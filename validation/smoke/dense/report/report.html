@@ -1,0 +1,995 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>AblationLab | verbosity</title>
+<style>body{font:16px/1.55 system-ui,sans-serif;max-width:1100px;margin:48px auto;padding:0 24px}h1{font-size:32px}summary{cursor:pointer;font-weight:600;padding:14px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:18px;background:#f5f5f5;border-radius:8px}details{border-bottom:1px solid #ddd}.note{padding:18px;background:#eef4f7}</style>
+<h1>AblationLab | verbosity</h1><p>Model: <code>toy:dense</code></p>
+<p class="note">Next: <strong>report</strong>. Experiments complete; report measured limits</p>
+<p>This is a local research report. No scientific claim follows from a heuristic label alone. Runtime stages leave checkpoint weights unchanged.</p>
+<figure><img style="max-width:100%" src="figures/heldout_separation.png" alt="heldout_separation"></figure><figure><img style="max-width:100%" src="figures/sweep_response.png" alt="sweep_response"></figure><figure><img style="max-width:100%" src="figures/refine_response.png" alt="refine_response"></figure><figure><img style="max-width:100%" src="figures/trace_response.png" alt="trace_response"></figure><figure><img style="max-width:100%" src="figures/persistent_response.png" alt="persistent_response"></figure><figure><img style="max-width:100%" src="figures/trace_prefix0_magnitude_ratio.png" alt="trace_prefix0_magnitude_ratio"></figure><figure><img style="max-width:100%" src="figures/trace_prefix0_signed_delta.png" alt="trace_prefix0_signed_delta"></figure><figure><img style="max-width:100%" src="figures/trace_prefix0_paired_error.png" alt="trace_prefix0_paired_error"></figure><figure><img style="max-width:100%" src="figures/trace_prefix2_magnitude_ratio.png" alt="trace_prefix2_magnitude_ratio"></figure><figure><img style="max-width:100%" src="figures/trace_prefix2_signed_delta.png" alt="trace_prefix2_signed_delta"></figure><figure><img style="max-width:100%" src="figures/trace_prefix2_paired_error.png" alt="trace_prefix2_paired_error"></figure><details><summary>inspect: What architecture and output sites were actually observed? Unsupported sites are not guessed.</summary><pre>{
+  &quot;capabilities&quot;: {
+    &quot;device&quot;: &quot;cpu&quot;,
+    &quot;dtype&quot;: &quot;torch.float32&quot;,
+    &quot;expert_inventory&quot;: [],
+    &quot;hidden_size&quot;: 24,
+    &quot;limitations&quot;: [
+      &quot;MoE support refers to block/aggregate-mixture output, not arbitrary routed/fused expert surgery&quot;,
+      &quot;Names and output shapes do not prove a component&#x27;s natural behavioral role&quot;,
+      &quot;last-block hooks are before final model norm; directions use that same site&quot;
+    ],
+    &quot;model_id&quot;: &quot;toy:dense&quot;,
+    &quot;moe_layers&quot;: [],
+    &quot;num_layers&quot;: 4,
+    &quot;parameter_bytes&quot;: 144384,
+    &quot;parameter_count&quot;: 36096,
+    &quot;resolved_revision&quot;: null,
+    &quot;sites&quot;: [
+      {
+        &quot;exportable_linear&quot;: false,
+        &quot;kind&quot;: &quot;residual&quot;,
+        &quot;layer&quot;: 0,
+        &quot;name&quot;: &quot;residual&quot;,
+        &quot;path&quot;: &quot;model.layers.0&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: true,
+        &quot;kind&quot;: &quot;writer&quot;,
+        &quot;layer&quot;: 0,
+        &quot;name&quot;: &quot;attention&quot;,
+        &quot;path&quot;: &quot;model.layers.0.self_attn.o_proj&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: true,
+        &quot;kind&quot;: &quot;writer&quot;,
+        &quot;layer&quot;: 0,
+        &quot;name&quot;: &quot;mlp&quot;,
+        &quot;path&quot;: &quot;model.layers.0.mlp.down_proj&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: false,
+        &quot;kind&quot;: &quot;residual&quot;,
+        &quot;layer&quot;: 1,
+        &quot;name&quot;: &quot;residual&quot;,
+        &quot;path&quot;: &quot;model.layers.1&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: true,
+        &quot;kind&quot;: &quot;writer&quot;,
+        &quot;layer&quot;: 1,
+        &quot;name&quot;: &quot;attention&quot;,
+        &quot;path&quot;: &quot;model.layers.1.self_attn.o_proj&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: true,
+        &quot;kind&quot;: &quot;writer&quot;,
+        &quot;layer&quot;: 1,
+        &quot;name&quot;: &quot;mlp&quot;,
+        &quot;path&quot;: &quot;model.layers.1.mlp.down_proj&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: false,
+        &quot;kind&quot;: &quot;residual&quot;,
+        &quot;layer&quot;: 2,
+        &quot;name&quot;: &quot;residual&quot;,
+        &quot;path&quot;: &quot;model.layers.2&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: true,
+        &quot;kind&quot;: &quot;writer&quot;,
+        &quot;layer&quot;: 2,
+        &quot;name&quot;: &quot;attention&quot;,
+        &quot;path&quot;: &quot;model.layers.2.self_attn.o_proj&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: true,
+        &quot;kind&quot;: &quot;writer&quot;,
+        &quot;layer&quot;: 2,
+        &quot;name&quot;: &quot;mlp&quot;,
+        &quot;path&quot;: &quot;model.layers.2.mlp.down_proj&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: false,
+        &quot;kind&quot;: &quot;residual&quot;,
+        &quot;layer&quot;: 3,
+        &quot;name&quot;: &quot;residual&quot;,
+        &quot;path&quot;: &quot;model.layers.3&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: true,
+        &quot;kind&quot;: &quot;writer&quot;,
+        &quot;layer&quot;: 3,
+        &quot;name&quot;: &quot;attention&quot;,
+        &quot;path&quot;: &quot;model.layers.3.self_attn.o_proj&quot;,
+        &quot;runtime_validated&quot;: true
+      },
+      {
+        &quot;exportable_linear&quot;: true,
+        &quot;kind&quot;: &quot;writer&quot;,
+        &quot;layer&quot;: 3,
+        &quot;name&quot;: &quot;mlp&quot;,
+        &quot;path&quot;: &quot;model.layers.3.mlp.down_proj&quot;,
+        &quot;runtime_validated&quot;: true
+      }
+    ],
+    &quot;stack_path&quot;: &quot;model.layers&quot;,
+    &quot;toy_fixture&quot;: true
+  },
+  &quot;model_identity&quot;: &quot;9091b86c5e10090a2d54cf4c2cbae4752fd7d86eef98951aa88db908a7215b2d&quot;
+}</pre></details><details><summary>baseline: How does the untouched model respond? The positive/negative instructions may not produce the behavior you expected.</summary><pre>{
+  &quot;cap_rate&quot;: 1.0,
+  &quot;mean_score&quot;: 8.0,
+  &quot;no_op_exact&quot;: true,
+  &quot;note&quot;: &quot;Instruction labels do not prove observed behavior; inspect contrast_outputs.json&quot;,
+  &quot;positive_minus_negative_score&quot;: 0.0
+}</pre></details><details><summary>capture: Capture raw block outputs on paired training/validation examples, before final model normalization.</summary><pre>{
+  &quot;capture_site&quot;: &quot;raw_block_output&quot;,
+  &quot;ids&quot;: {
+    &quot;train&quot;: [
+      &quot;train-0&quot;,
+      &quot;train-1&quot;,
+      &quot;train-2&quot;,
+      &quot;train-3&quot;
+    ],
+    &quot;validation&quot;: [
+      &quot;validation-0&quot;,
+      &quot;validation-1&quot;,
+      &quot;validation-2&quot;,
+      &quot;validation-3&quot;
+    ]
+  },
+  &quot;model_identity&quot;: &quot;9091b86c5e10090a2d54cf4c2cbae4752fd7d86eef98951aa88db908a7215b2d&quot;,
+  &quot;position&quot;: &quot;last_prompt_token&quot;,
+  &quot;shapes&quot;: {
+    &quot;train_negative&quot;: [
+      4,
+      4,
+      24
+    ],
+    &quot;train_positive&quot;: [
+      4,
+      4,
+      24
+    ],
+    &quot;validation_negative&quot;: [
+      4,
+      4,
+      24
+    ],
+    &quot;validation_positive&quot;: [
+      4,
+      4,
+      24
+    ]
+  }
+}</pre></details><details><summary>directions: Estimate a direction or subspace and check held-out separation. This is not proof of causality.</summary><pre>{
+  &quot;calibrated&quot;: true,
+  &quot;eligible_layers&quot;: [
+    0,
+    1,
+    2,
+    3
+  ],
+  &quot;metrics&quot;: [
+    {
+      &quot;layer&quot;: 0,
+      &quot;midpoint_accuracy&quot;: 0.875,
+      &quot;negative_coordinate&quot;: 0.06532520055770874,
+      &quot;paired_positive_fraction&quot;: 1.0,
+      &quot;pooled_std&quot;: 0.03322494029998779,
+      &quot;positive_coordinate&quot;: 0.3574916422367096,
+      &quot;standardized_separation&quot;: 8.893516940486741,
+      &quot;train_gap&quot;: 0.292166531085968,
+      &quot;validation_margin&quot;: 0.29548656940460205
+    },
+    {
+      &quot;layer&quot;: 1,
+      &quot;midpoint_accuracy&quot;: 0.875,
+      &quot;negative_coordinate&quot;: 0.05220809578895569,
+      &quot;paired_positive_fraction&quot;: 1.0,
+      &quot;pooled_std&quot;: 0.05066943168640137,
+      &quot;positive_coordinate&quot;: 0.34719526767730713,
+      &quot;standardized_separation&quot;: 5.8806446831637045,
+      &quot;train_gap&quot;: 0.29498717188835144,
+      &quot;validation_margin&quot;: 0.29796892404556274
+    },
+    {
+      &quot;layer&quot;: 2,
+      &quot;midpoint_accuracy&quot;: 1.0,
+      &quot;negative_coordinate&quot;: 0.6021502017974854,
+      &quot;paired_positive_fraction&quot;: 1.0,
+      &quot;pooled_std&quot;: 0.07892688363790512,
+      &quot;positive_coordinate&quot;: 0.953289270401001,
+      &quot;standardized_separation&quot;: 4.440839176365406,
+      &quot;train_gap&quot;: 0.35113903880119324,
+      &quot;validation_margin&quot;: 0.3505015969276428
+    },
+    {
+      &quot;layer&quot;: 3,
+      &quot;midpoint_accuracy&quot;: 1.0,
+      &quot;negative_coordinate&quot;: 0.9277867674827576,
+      &quot;paired_positive_fraction&quot;: 1.0,
+      &quot;pooled_std&quot;: 0.08354421705007553,
+      &quot;positive_coordinate&quot;: 1.3847527503967285,
+      &quot;standardized_separation&quot;: 5.466450312870242,
+      &quot;train_gap&quot;: 0.4569658935070038,
+      &quot;validation_margin&quot;: 0.45669031143188477
+    }
+  ],
+  &quot;note&quot;: &quot;Held-out instruction-contrast separation; not automatic causal proof&quot;
+}</pre></details><details><summary>sweep: Intervene at individual layers and compare behavioral scores. Random directions test generic disruption.</summary><pre>{
+  &quot;candidates&quot;: [],
+  &quot;cap_heavy&quot;: false,
+  &quot;exploratory_candidates&quot;: [
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;effect_fraction&quot;: 0.0,
+      &quot;eligible&quot;: false,
+      &quot;layer&quot;: 0,
+      &quot;max_new_tokens&quot;: 8,
+      &quot;orientation&quot;: 1,
+      &quot;random_control_max_effect&quot;: 0.0,
+      &quot;ranking_score&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;signed_effect&quot;: 0.0,
+      &quot;specificity_pass&quot;: false,
+      &quot;strength_score_correlation&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;effect_fraction&quot;: 0.0,
+      &quot;eligible&quot;: false,
+      &quot;layer&quot;: 1,
+      &quot;max_new_tokens&quot;: 8,
+      &quot;orientation&quot;: 1,
+      &quot;random_control_max_effect&quot;: 0.0,
+      &quot;ranking_score&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;signed_effect&quot;: 0.0,
+      &quot;specificity_pass&quot;: false,
+      &quot;strength_score_correlation&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    }
+  ],
+  &quot;max_new_tokens&quot;: 8,
+  &quot;note&quot;: &quot;Candidate thresholds are configurable heuristics; test split not used here&quot;,
+  &quot;strengths&quot;: [
+    -0.25,
+    0.25
+  ],
+  &quot;summary&quot;: [
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;effect_fraction&quot;: 0.0,
+      &quot;eligible&quot;: false,
+      &quot;layer&quot;: 0,
+      &quot;max_new_tokens&quot;: 8,
+      &quot;orientation&quot;: 1,
+      &quot;random_control_max_effect&quot;: 0.0,
+      &quot;ranking_score&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;signed_effect&quot;: 0.0,
+      &quot;specificity_pass&quot;: false,
+      &quot;strength_score_correlation&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;effect_fraction&quot;: 0.0,
+      &quot;eligible&quot;: false,
+      &quot;layer&quot;: 1,
+      &quot;max_new_tokens&quot;: 8,
+      &quot;orientation&quot;: 1,
+      &quot;random_control_max_effect&quot;: 0.0,
+      &quot;ranking_score&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;signed_effect&quot;: 0.0,
+      &quot;specificity_pass&quot;: false,
+      &quot;strength_score_correlation&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    }
+  ]
+}</pre></details><details><summary>refine: One bounded confirmation with gentler interventions and a higher token ceiling.</summary><pre>{
+  &quot;candidates&quot;: [],
+  &quot;cap_heavy&quot;: false,
+  &quot;exploratory_candidates&quot;: [
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;effect_fraction&quot;: 0.0,
+      &quot;eligible&quot;: false,
+      &quot;layer&quot;: 0,
+      &quot;max_new_tokens&quot;: 12,
+      &quot;orientation&quot;: 1,
+      &quot;random_control_max_effect&quot;: 0.0,
+      &quot;ranking_score&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;signed_effect&quot;: 0.0,
+      &quot;specificity_pass&quot;: false,
+      &quot;strength_score_correlation&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;effect_fraction&quot;: 0.0,
+      &quot;eligible&quot;: false,
+      &quot;layer&quot;: 1,
+      &quot;max_new_tokens&quot;: 12,
+      &quot;orientation&quot;: 1,
+      &quot;random_control_max_effect&quot;: 0.0,
+      &quot;ranking_score&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;signed_effect&quot;: 0.0,
+      &quot;specificity_pass&quot;: false,
+      &quot;strength_score_correlation&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    }
+  ],
+  &quot;max_new_tokens&quot;: 12,
+  &quot;note&quot;: &quot;Candidate thresholds are configurable heuristics; test split not used here&quot;,
+  &quot;strengths&quot;: [
+    -0.125,
+    0.125
+  ],
+  &quot;summary&quot;: [
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;effect_fraction&quot;: 0.0,
+      &quot;eligible&quot;: false,
+      &quot;layer&quot;: 0,
+      &quot;max_new_tokens&quot;: 12,
+      &quot;orientation&quot;: 1,
+      &quot;random_control_max_effect&quot;: 0.0,
+      &quot;ranking_score&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;signed_effect&quot;: 0.0,
+      &quot;specificity_pass&quot;: false,
+      &quot;strength_score_correlation&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;effect_fraction&quot;: 0.0,
+      &quot;eligible&quot;: false,
+      &quot;layer&quot;: 1,
+      &quot;max_new_tokens&quot;: 12,
+      &quot;orientation&quot;: 1,
+      &quot;random_control_max_effect&quot;: 0.0,
+      &quot;ranking_score&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;signed_effect&quot;: 0.0,
+      &quot;specificity_pass&quot;: false,
+      &quot;strength_score_correlation&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    }
+  ]
+}</pre></details><details><summary>writers: Compare places to inject an activation. This does not identify which matrix naturally owns the behavior.</summary><pre>{
+  &quot;note&quot;: &quot;For sequential pre-norm blocks, MLP-output addition and block-output addition can be algebraically equivalent; rounding is not natural attribution&quot;,
+  &quot;selected_sites&quot;: [],
+  &quot;summary&quot;: [
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;kind&quot;: &quot;residual&quot;,
+      &quot;layer&quot;: 0,
+      &quot;note&quot;: &quot;Intervention-site sensitivity, NOT natural component responsibility&quot;,
+      &quot;path&quot;: &quot;model.layers.0&quot;,
+      &quot;site&quot;: &quot;residual&quot;,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;kind&quot;: &quot;writer&quot;,
+      &quot;layer&quot;: 0,
+      &quot;note&quot;: &quot;Intervention-site sensitivity, NOT natural component responsibility&quot;,
+      &quot;path&quot;: &quot;model.layers.0.self_attn.o_proj&quot;,
+      &quot;site&quot;: &quot;attention&quot;,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;kind&quot;: &quot;writer&quot;,
+      &quot;layer&quot;: 0,
+      &quot;note&quot;: &quot;Intervention-site sensitivity, NOT natural component responsibility&quot;,
+      &quot;path&quot;: &quot;model.layers.0.mlp.down_proj&quot;,
+      &quot;site&quot;: &quot;mlp&quot;,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;kind&quot;: &quot;composite&quot;,
+      &quot;layer&quot;: 0,
+      &quot;note&quot;: &quot;Intervention-site sensitivity, NOT natural component responsibility&quot;,
+      &quot;path&quot;: &quot;split attention + MLP output injection&quot;,
+      &quot;site&quot;: &quot;both&quot;,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;kind&quot;: &quot;residual&quot;,
+      &quot;layer&quot;: 1,
+      &quot;note&quot;: &quot;Intervention-site sensitivity, NOT natural component responsibility&quot;,
+      &quot;path&quot;: &quot;model.layers.1&quot;,
+      &quot;site&quot;: &quot;residual&quot;,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;kind&quot;: &quot;writer&quot;,
+      &quot;layer&quot;: 1,
+      &quot;note&quot;: &quot;Intervention-site sensitivity, NOT natural component responsibility&quot;,
+      &quot;path&quot;: &quot;model.layers.1.self_attn.o_proj&quot;,
+      &quot;site&quot;: &quot;attention&quot;,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;kind&quot;: &quot;writer&quot;,
+      &quot;layer&quot;: 1,
+      &quot;note&quot;: &quot;Intervention-site sensitivity, NOT natural component responsibility&quot;,
+      &quot;path&quot;: &quot;model.layers.1.mlp.down_proj&quot;,
+      &quot;site&quot;: &quot;mlp&quot;,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;cap_rate&quot;: 1.0,
+      &quot;effect&quot;: 0.0,
+      &quot;kind&quot;: &quot;composite&quot;,
+      &quot;layer&quot;: 1,
+      &quot;note&quot;: &quot;Intervention-site sensitivity, NOT natural component responsibility&quot;,
+      &quot;path&quot;: &quot;split attention + MLP output injection&quot;,
+      &quot;site&quot;: &quot;both&quot;,
+      &quot;win_rate&quot;: 0.0
+    }
+  ]
+}</pre></details><details><summary>ablate: Remove an existing component at writer outputs. Zero and negative-class coordinates are not equivalent.</summary><pre>{
+  &quot;all_tested&quot;: 0,
+  &quot;note&quot;: &quot;Zero removes a geometric component, not necessarily positive behavior; negative-centroid reference is separately declared&quot;,
+  &quot;promising&quot;: [],
+  &quot;summary&quot;: []
+}</pre></details><details><summary>trace: Compare raw residual ablation with fixed-prefix, signed-coordinate measurements. Coordinate return alone is not reconstruction.</summary><pre>{
+  &quot;all_tested&quot;: 4,
+  &quot;note&quot;: &quot;Zero removes a geometric component, not necessarily positive behavior; negative-centroid reference is separately declared&quot;,
+  &quot;projection_summary&quot;: [
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.354189557954669,
+      &quot;mean_baseline_abs&quot;: 0.35418950766324997,
+      &quot;mean_baseline_signed&quot;: 0.35418950766324997,
+      &quot;mean_changed_abs&quot;: 5.4016709327697754e-08,
+      &quot;mean_changed_signed&quot;: -5.029141902923584e-08,
+      &quot;mean_signed_delta&quot;: -0.354189557954669,
+      &quot;median_individual_abs_ratio_eligible&quot;: 1.6489029829264195e-07,
+      &quot;observed_layer&quot;: 0,
+      &quot;prefix_tokens&quot;: 0,
+      &quot;ratio_of_mean_abs&quot;: 1.5250793193754008e-07,
+      &quot;rmse_paired&quot;: 0.35682762706378585,
+      &quot;sign_agreement_eligible&quot;: 0.25,
+      &quot;source_layer&quot;: 0
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.2865406647324562,
+      &quot;mean_baseline_abs&quot;: 0.2964877560734749,
+      &quot;mean_baseline_signed&quot;: 0.2964877560734749,
+      &quot;mean_changed_abs&quot;: 0.037370216101408005,
+      &quot;mean_changed_signed&quot;: 0.009947091341018677,
+      &quot;mean_signed_delta&quot;: -0.2865406647324562,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.12107261881950501,
+      &quot;observed_layer&quot;: 1,
+      &quot;prefix_tokens&quot;: 0,
+      &quot;ratio_of_mean_abs&quot;: 0.12604303326491165,
+      &quot;rmse_paired&quot;: 0.28862031478473144,
+      &quot;sign_agreement_eligible&quot;: 0.5,
+      &quot;source_layer&quot;: 0
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.2715517058968544,
+      &quot;mean_baseline_abs&quot;: 0.8217840939760208,
+      &quot;mean_baseline_signed&quot;: 0.8217840939760208,
+      &quot;mean_changed_abs&quot;: 0.5502323880791664,
+      &quot;mean_changed_signed&quot;: 0.5502323880791664,
+      &quot;mean_signed_delta&quot;: -0.2715517058968544,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.6587850990461752,
+      &quot;observed_layer&quot;: 2,
+      &quot;prefix_tokens&quot;: 0,
+      &quot;ratio_of_mean_abs&quot;: 0.669558333037317,
+      &quot;rmse_paired&quot;: 0.27341093904250713,
+      &quot;sign_agreement_eligible&quot;: 1.0,
+      &quot;source_layer&quot;: 0
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.25336509943008423,
+      &quot;mean_baseline_abs&quot;: 1.2279248237609863,
+      &quot;mean_baseline_signed&quot;: 1.2279248237609863,
+      &quot;mean_changed_abs&quot;: 0.9745597243309021,
+      &quot;mean_changed_signed&quot;: 0.9745597243309021,
+      &quot;mean_signed_delta&quot;: -0.25336509943008423,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.7925374558431237,
+      &quot;observed_layer&quot;: 3,
+      &quot;prefix_tokens&quot;: 0,
+      &quot;ratio_of_mean_abs&quot;: 0.7936639975613023,
+      &quot;rmse_paired&quot;: 0.255113012873873,
+      &quot;sign_agreement_eligible&quot;: 1.0,
+      &quot;source_layer&quot;: 0
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 1.549939738586545,
+      &quot;mean_baseline_abs&quot;: 1.5499396920204163,
+      &quot;mean_baseline_signed&quot;: -1.5499396920204163,
+      &quot;mean_changed_abs&quot;: 5.4016709327697754e-08,
+      &quot;mean_changed_signed&quot;: 4.6566128730773926e-08,
+      &quot;mean_signed_delta&quot;: 1.549939738586545,
+      &quot;median_individual_abs_ratio_eligible&quot;: 2.5133608378277843e-08,
+      &quot;observed_layer&quot;: 0,
+      &quot;prefix_tokens&quot;: 2,
+      &quot;ratio_of_mean_abs&quot;: 3.4850845878580305e-08,
+      &quot;rmse_paired&quot;: 1.5508885314703547,
+      &quot;sign_agreement_eligible&quot;: 0.25,
+      &quot;source_layer&quot;: 0
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 1.311953142285347,
+      &quot;mean_baseline_abs&quot;: 0.580970510840416,
+      &quot;mean_baseline_signed&quot;: -0.580970510840416,
+      &quot;mean_changed_abs&quot;: 0.730982631444931,
+      &quot;mean_changed_signed&quot;: 0.730982631444931,
+      &quot;mean_signed_delta&quot;: 1.311953142285347,
+      &quot;median_individual_abs_ratio_eligible&quot;: 1.2075418505227664,
+      &quot;observed_layer&quot;: 1,
+      &quot;prefix_tokens&quot;: 2,
+      &quot;ratio_of_mean_abs&quot;: 1.2582095266548239,
+      &quot;rmse_paired&quot;: 1.3128078939120111,
+      &quot;sign_agreement_eligible&quot;: 0.0,
+      &quot;source_layer&quot;: 0
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 1.1878543496131897,
+      &quot;mean_baseline_abs&quot;: 0.9403439164161682,
+      &quot;mean_baseline_signed&quot;: -0.9403439164161682,
+      &quot;mean_changed_abs&quot;: 0.24751043319702148,
+      &quot;mean_changed_signed&quot;: 0.24751043319702148,
+      &quot;mean_signed_delta&quot;: 1.1878543496131897,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.27409038894789944,
+      &quot;observed_layer&quot;: 2,
+      &quot;prefix_tokens&quot;: 2,
+      &quot;ratio_of_mean_abs&quot;: 0.2632126702540188,
+      &quot;rmse_paired&quot;: 1.1887353093960422,
+      &quot;sign_agreement_eligible&quot;: 0.0,
+      &quot;source_layer&quot;: 0
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 1.1222312450408936,
+      &quot;mean_baseline_abs&quot;: 1.6327048242092133,
+      &quot;mean_baseline_signed&quot;: -1.6327048242092133,
+      &quot;mean_changed_abs&quot;: 0.5104735791683197,
+      &quot;mean_changed_signed&quot;: -0.5104735791683197,
+      &quot;mean_signed_delta&quot;: 1.1222312450408936,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.3301849238757695,
+      &quot;observed_layer&quot;: 3,
+      &quot;prefix_tokens&quot;: 2,
+      &quot;ratio_of_mean_abs&quot;: 0.31265515456265236,
+      &quot;rmse_paired&quot;: 1.1230664164529933,
+      &quot;sign_agreement_eligible&quot;: 1.0,
+      &quot;source_layer&quot;: 0
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.29648772813379765,
+      &quot;mean_baseline_abs&quot;: 0.2964877560734749,
+      &quot;mean_baseline_signed&quot;: 0.2964877560734749,
+      &quot;mean_changed_abs&quot;: 5.4016709327697754e-08,
+      &quot;mean_changed_signed&quot;: 2.7939677238464355e-08,
+      &quot;mean_signed_delta&quot;: -0.29648772813379765,
+      &quot;median_individual_abs_ratio_eligible&quot;: 1.2792761403872442e-07,
+      &quot;observed_layer&quot;: 1,
+      &quot;prefix_tokens&quot;: 0,
+      &quot;ratio_of_mean_abs&quot;: 1.821886679000379e-07,
+      &quot;rmse_paired&quot;: 0.3037944744403324,
+      &quot;sign_agreement_eligible&quot;: 0.5,
+      &quot;source_layer&quot;: 1
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.27319149672985077,
+      &quot;mean_baseline_abs&quot;: 0.8217840939760208,
+      &quot;mean_baseline_signed&quot;: 0.8217840939760208,
+      &quot;mean_changed_abs&quot;: 0.54859259724617,
+      &quot;mean_changed_signed&quot;: 0.54859259724617,
+      &quot;mean_signed_delta&quot;: -0.27319149672985077,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.6816050456868656,
+      &quot;observed_layer&quot;: 2,
+      &quot;prefix_tokens&quot;: 0,
+      &quot;ratio_of_mean_abs&quot;: 0.6675629295669693,
+      &quot;rmse_paired&quot;: 0.27984583337506747,
+      &quot;sign_agreement_eligible&quot;: 1.0,
+      &quot;source_layer&quot;: 1
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.2621025890111923,
+      &quot;mean_baseline_abs&quot;: 1.2279248237609863,
+      &quot;mean_baseline_signed&quot;: 1.2279248237609863,
+      &quot;mean_changed_abs&quot;: 0.965822234749794,
+      &quot;mean_changed_signed&quot;: 0.965822234749794,
+      &quot;mean_signed_delta&quot;: -0.2621025890111923,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.8008310171425987,
+      &quot;observed_layer&quot;: 3,
+      &quot;prefix_tokens&quot;: 0,
+      &quot;ratio_of_mean_abs&quot;: 0.7865483424234363,
+      &quot;rmse_paired&quot;: 0.26841680200231055,
+      &quot;sign_agreement_eligible&quot;: 1.0,
+      &quot;source_layer&quot;: 1
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.5809704139828682,
+      &quot;mean_baseline_abs&quot;: 0.580970510840416,
+      &quot;mean_baseline_signed&quot;: -0.580970510840416,
+      &quot;mean_changed_abs&quot;: 9.685754776000977e-08,
+      &quot;mean_changed_signed&quot;: -9.685754776000977e-08,
+      &quot;mean_signed_delta&quot;: 0.5809704139828682,
+      &quot;median_individual_abs_ratio_eligible&quot;: 1.5802809303078045e-07,
+      &quot;observed_layer&quot;: 1,
+      &quot;prefix_tokens&quot;: 2,
+      &quot;ratio_of_mean_abs&quot;: 1.6671680567727664e-07,
+      &quot;rmse_paired&quot;: 0.5854056899736743,
+      &quot;sign_agreement_eligible&quot;: 1.0,
+      &quot;source_layer&quot;: 1
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.5157165452837944,
+      &quot;mean_baseline_abs&quot;: 0.9403439164161682,
+      &quot;mean_baseline_signed&quot;: -0.9403439164161682,
+      &quot;mean_changed_abs&quot;: 0.4246273711323738,
+      &quot;mean_changed_signed&quot;: -0.4246273711323738,
+      &quot;mean_signed_delta&quot;: 0.5157165452837944,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.45107262748863675,
+      &quot;observed_layer&quot;: 2,
+      &quot;prefix_tokens&quot;: 2,
+      &quot;ratio_of_mean_abs&quot;: 0.45156603208612284,
+      &quot;rmse_paired&quot;: 0.519722370652962,
+      &quot;sign_agreement_eligible&quot;: 1.0,
+      &quot;source_layer&quot;: 1
+    },
+    {
+      &quot;eligible_fraction&quot;: 1.0,
+      &quot;mean_abs_paired_error&quot;: 0.4880673587322235,
+      &quot;mean_baseline_abs&quot;: 1.6327048242092133,
+      &quot;mean_baseline_signed&quot;: -1.6327048242092133,
+      &quot;mean_changed_abs&quot;: 1.1446374654769897,
+      &quot;mean_changed_signed&quot;: -1.1446374654769897,
+      &quot;mean_signed_delta&quot;: 0.4880673587322235,
+      &quot;median_individual_abs_ratio_eligible&quot;: 0.6889928652689747,
+      &quot;observed_layer&quot;: 3,
+      &quot;prefix_tokens&quot;: 2,
+      &quot;ratio_of_mean_abs&quot;: 0.7010682203572132,
+      &quot;rmse_paired&quot;: 0.4918737097402098,
+      &quot;sign_agreement_eligible&quot;: 1.0,
+      &quot;source_layer&quot;: 1
+    }
+  ],
+  &quot;promising&quot;: [],
+  &quot;summary&quot;: [
+    {
+      &quot;baseline_cap_rate&quot;: 1.0,
+      &quot;cap_rate&quot;: 1.0,
+      &quot;ci95_high&quot;: 0.0,
+      &quot;ci95_low&quot;: 0.0,
+      &quot;gain_fraction_of_baseline_mean&quot;: 0.0,
+      &quot;intervention&quot;: {
+        &quot;control_seed&quot;: null,
+        &quot;layers&quot;: [
+          0
+        ],
+        &quot;operation&quot;: &quot;ablate&quot;,
+        &quot;phase&quot;: &quot;both&quot;,
+        &quot;reference&quot;: &quot;zero&quot;,
+        &quot;scope&quot;: &quot;last&quot;,
+        &quot;site&quot;: &quot;residual&quot;,
+        &quot;strength&quot;: 0.5
+      },
+      &quot;label&quot;: &quot;L0/residual&quot;,
+      &quot;mean_baseline&quot;: 8.0,
+      &quot;mean_gain&quot;: 0.0,
+      &quot;mean_intervention&quot;: 8.0,
+      &quot;mean_per_example_fraction&quot;: 0.0,
+      &quot;median_gain&quot;: 0.0,
+      &quot;n&quot;: 4,
+      &quot;provisional_pass&quot;: false,
+      &quot;random_control_max_gain_fraction&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;required_term_change&quot;: null,
+      &quot;tie_rate&quot;: 1.0,
+      &quot;uncensored_pair_fraction&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;baseline_cap_rate&quot;: 1.0,
+      &quot;cap_rate&quot;: 1.0,
+      &quot;ci95_high&quot;: 0.0,
+      &quot;ci95_low&quot;: 0.0,
+      &quot;gain_fraction_of_baseline_mean&quot;: 0.0,
+      &quot;intervention&quot;: {
+        &quot;control_seed&quot;: null,
+        &quot;layers&quot;: [
+          0
+        ],
+        &quot;operation&quot;: &quot;ablate&quot;,
+        &quot;phase&quot;: &quot;both&quot;,
+        &quot;reference&quot;: &quot;zero&quot;,
+        &quot;scope&quot;: &quot;last&quot;,
+        &quot;site&quot;: &quot;residual&quot;,
+        &quot;strength&quot;: 1.0
+      },
+      &quot;label&quot;: &quot;L0/residual&quot;,
+      &quot;mean_baseline&quot;: 8.0,
+      &quot;mean_gain&quot;: 0.0,
+      &quot;mean_intervention&quot;: 8.0,
+      &quot;mean_per_example_fraction&quot;: 0.0,
+      &quot;median_gain&quot;: 0.0,
+      &quot;n&quot;: 4,
+      &quot;provisional_pass&quot;: false,
+      &quot;random_control_max_gain_fraction&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;required_term_change&quot;: null,
+      &quot;tie_rate&quot;: 1.0,
+      &quot;uncensored_pair_fraction&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;baseline_cap_rate&quot;: 1.0,
+      &quot;cap_rate&quot;: 1.0,
+      &quot;ci95_high&quot;: 0.0,
+      &quot;ci95_low&quot;: 0.0,
+      &quot;gain_fraction_of_baseline_mean&quot;: 0.0,
+      &quot;intervention&quot;: {
+        &quot;control_seed&quot;: null,
+        &quot;layers&quot;: [
+          1
+        ],
+        &quot;operation&quot;: &quot;ablate&quot;,
+        &quot;phase&quot;: &quot;both&quot;,
+        &quot;reference&quot;: &quot;zero&quot;,
+        &quot;scope&quot;: &quot;last&quot;,
+        &quot;site&quot;: &quot;residual&quot;,
+        &quot;strength&quot;: 0.5
+      },
+      &quot;label&quot;: &quot;L1/residual&quot;,
+      &quot;mean_baseline&quot;: 8.0,
+      &quot;mean_gain&quot;: 0.0,
+      &quot;mean_intervention&quot;: 8.0,
+      &quot;mean_per_example_fraction&quot;: 0.0,
+      &quot;median_gain&quot;: 0.0,
+      &quot;n&quot;: 4,
+      &quot;provisional_pass&quot;: false,
+      &quot;random_control_max_gain_fraction&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;required_term_change&quot;: null,
+      &quot;tie_rate&quot;: 1.0,
+      &quot;uncensored_pair_fraction&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;baseline_cap_rate&quot;: 1.0,
+      &quot;cap_rate&quot;: 1.0,
+      &quot;ci95_high&quot;: 0.0,
+      &quot;ci95_low&quot;: 0.0,
+      &quot;gain_fraction_of_baseline_mean&quot;: 0.0,
+      &quot;intervention&quot;: {
+        &quot;control_seed&quot;: null,
+        &quot;layers&quot;: [
+          1
+        ],
+        &quot;operation&quot;: &quot;ablate&quot;,
+        &quot;phase&quot;: &quot;both&quot;,
+        &quot;reference&quot;: &quot;zero&quot;,
+        &quot;scope&quot;: &quot;last&quot;,
+        &quot;site&quot;: &quot;residual&quot;,
+        &quot;strength&quot;: 1.0
+      },
+      &quot;label&quot;: &quot;L1/residual&quot;,
+      &quot;mean_baseline&quot;: 8.0,
+      &quot;mean_gain&quot;: 0.0,
+      &quot;mean_intervention&quot;: 8.0,
+      &quot;mean_per_example_fraction&quot;: 0.0,
+      &quot;median_gain&quot;: 0.0,
+      &quot;n&quot;: 4,
+      &quot;provisional_pass&quot;: false,
+      &quot;random_control_max_gain_fraction&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;required_term_change&quot;: null,
+      &quot;tie_rate&quot;: 1.0,
+      &quot;uncensored_pair_fraction&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    }
+  ],
+  &quot;trace_caveat&quot;: &quot;Matched fixed-prefix, single-forward diagnostic. Later layer probes use different directions; coordinate return is not proof of information reconstruction. Not a recording of divergent autoregressive generations.&quot;
+}</pre></details><details><summary>persistent: Repeat a defined intervention over selected layers. Compare a matched random projection, not just raw output length.</summary><pre>{
+  &quot;all_tested&quot;: 2,
+  &quot;note&quot;: &quot;Each layer uses its own calibrated basis. More layers means larger total intervention; random controls are matched to the same region. No automatic expansion beyond configured regions.&quot;,
+  &quot;promising&quot;: [],
+  &quot;regions&quot;: {
+    &quot;peaks&quot;: [
+      0,
+      1
+    ]
+  },
+  &quot;summary&quot;: [
+    {
+      &quot;baseline_cap_rate&quot;: 1.0,
+      &quot;cap_rate&quot;: 1.0,
+      &quot;ci95_high&quot;: 0.0,
+      &quot;ci95_low&quot;: 0.0,
+      &quot;gain_fraction_of_baseline_mean&quot;: 0.0,
+      &quot;intervention&quot;: {
+        &quot;control_seed&quot;: null,
+        &quot;layers&quot;: [
+          0,
+          1
+        ],
+        &quot;operation&quot;: &quot;ablate&quot;,
+        &quot;phase&quot;: &quot;both&quot;,
+        &quot;reference&quot;: &quot;zero&quot;,
+        &quot;scope&quot;: &quot;last&quot;,
+        &quot;site&quot;: &quot;residual&quot;,
+        &quot;strength&quot;: 0.5
+      },
+      &quot;label&quot;: &quot;peaks&quot;,
+      &quot;mean_baseline&quot;: 8.0,
+      &quot;mean_gain&quot;: 0.0,
+      &quot;mean_intervention&quot;: 8.0,
+      &quot;mean_per_example_fraction&quot;: 0.0,
+      &quot;median_gain&quot;: 0.0,
+      &quot;n&quot;: 4,
+      &quot;provisional_pass&quot;: false,
+      &quot;random_control_max_gain_fraction&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;required_term_change&quot;: null,
+      &quot;tie_rate&quot;: 1.0,
+      &quot;uncensored_pair_fraction&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    },
+    {
+      &quot;baseline_cap_rate&quot;: 1.0,
+      &quot;cap_rate&quot;: 1.0,
+      &quot;ci95_high&quot;: 0.0,
+      &quot;ci95_low&quot;: 0.0,
+      &quot;gain_fraction_of_baseline_mean&quot;: 0.0,
+      &quot;intervention&quot;: {
+        &quot;control_seed&quot;: null,
+        &quot;layers&quot;: [
+          0,
+          1
+        ],
+        &quot;operation&quot;: &quot;ablate&quot;,
+        &quot;phase&quot;: &quot;both&quot;,
+        &quot;reference&quot;: &quot;zero&quot;,
+        &quot;scope&quot;: &quot;last&quot;,
+        &quot;site&quot;: &quot;residual&quot;,
+        &quot;strength&quot;: 1.0
+      },
+      &quot;label&quot;: &quot;peaks&quot;,
+      &quot;mean_baseline&quot;: 8.0,
+      &quot;mean_gain&quot;: 0.0,
+      &quot;mean_intervention&quot;: 8.0,
+      &quot;mean_per_example_fraction&quot;: 0.0,
+      &quot;median_gain&quot;: 0.0,
+      &quot;n&quot;: 4,
+      &quot;provisional_pass&quot;: false,
+      &quot;random_control_max_gain_fraction&quot;: 0.0,
+      &quot;repeat_increase&quot;: 0.0,
+      &quot;required_term_change&quot;: null,
+      &quot;tie_rate&quot;: 1.0,
+      &quot;uncensored_pair_fraction&quot;: 0.0,
+      &quot;win_rate&quot;: 0.0
+    }
+  ]
+}</pre></details><details><summary>evaluate: Apply the chosen intervention to held-out test/control examples. Lexical checks are not factual verification.</summary><pre>{
+  &quot;control&quot;: {
+    &quot;baseline_cap_rate&quot;: 1.0,
+    &quot;cap_rate&quot;: 1.0,
+    &quot;ci95_high&quot;: 0.0,
+    &quot;ci95_low&quot;: 0.0,
+    &quot;gain_fraction_of_baseline_mean&quot;: 0.0,
+    &quot;intervention&quot;: {
+      &quot;control_seed&quot;: null,
+      &quot;layers&quot;: [
+        0
+      ],
+      &quot;operation&quot;: &quot;steer&quot;,
+      &quot;phase&quot;: &quot;both&quot;,
+      &quot;reference&quot;: &quot;zero&quot;,
+      &quot;scope&quot;: &quot;last&quot;,
+      &quot;site&quot;: &quot;residual&quot;,
+      &quot;strength&quot;: -0.25
+    },
+    &quot;mean_baseline&quot;: 8.0,
+    &quot;mean_gain&quot;: 0.0,
+    &quot;mean_intervention&quot;: 8.0,
+    &quot;mean_per_example_fraction&quot;: 0.0,
+    &quot;median_gain&quot;: 0.0,
+    &quot;n&quot;: 1,
+    &quot;provisional_pass&quot;: false,
+    &quot;repeat_increase&quot;: 0.0,
+    &quot;required_term_change&quot;: null,
+    &quot;tie_rate&quot;: 1.0,
+    &quot;uncensored_pair_fraction&quot;: 0.0,
+    &quot;win_rate&quot;: 0.0
+  },
+  &quot;control_absolute_drift_fraction&quot;: 0.0,
+  &quot;control_reference_nll_increase&quot;: -0.0010805130004882812,
+  &quot;needs_human_quality_review&quot;: true,
+  &quot;note&quot;: &quot;Lexical/repetition checks do not establish factual accuracy, and a small held-out set does not establish general performance&quot;,
+  &quot;passed&quot;: false,
+  &quot;selected_intervention&quot;: {
+    &quot;control_seed&quot;: null,
+    &quot;layers&quot;: [
+      0
+    ],
+    &quot;operation&quot;: &quot;steer&quot;,
+    &quot;phase&quot;: &quot;both&quot;,
+    &quot;reference&quot;: &quot;zero&quot;,
+    &quot;scope&quot;: &quot;last&quot;,
+    &quot;site&quot;: &quot;residual&quot;,
+    &quot;strength&quot;: -0.25
+  },
+  &quot;test&quot;: {
+    &quot;baseline_cap_rate&quot;: 1.0,
+    &quot;cap_rate&quot;: 1.0,
+    &quot;ci95_high&quot;: 0.0,
+    &quot;ci95_low&quot;: 0.0,
+    &quot;gain_fraction_of_baseline_mean&quot;: 0.0,
+    &quot;intervention&quot;: {
+      &quot;control_seed&quot;: null,
+      &quot;layers&quot;: [
+        0
+      ],
+      &quot;operation&quot;: &quot;steer&quot;,
+      &quot;phase&quot;: &quot;both&quot;,
+      &quot;reference&quot;: &quot;zero&quot;,
+      &quot;scope&quot;: &quot;last&quot;,
+      &quot;site&quot;: &quot;residual&quot;,
+      &quot;strength&quot;: -0.25
+    },
+    &quot;mean_baseline&quot;: 8.0,
+    &quot;mean_gain&quot;: 0.0,
+    &quot;mean_intervention&quot;: 8.0,
+    &quot;mean_per_example_fraction&quot;: 0.0,
+    &quot;median_gain&quot;: 0.0,
+    &quot;n&quot;: 2,
+    &quot;provisional_pass&quot;: false,
+    &quot;repeat_increase&quot;: 0.0,
+    &quot;required_term_change&quot;: null,
+    &quot;tie_rate&quot;: 1.0,
+    &quot;uncensored_pair_fraction&quot;: 0.0,
+    &quot;win_rate&quot;: 0.0
+  }
+}</pre></details><h2>Review the actual responses</h2><p>Each completed stage has outputs.json and results.csv. Compare answer content, stopping reasons, objective scores, random controls and held-out performance before interpreting any effect.</p></html>

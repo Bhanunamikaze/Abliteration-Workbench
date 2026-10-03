@@ -1,0 +1,15 @@
+{
+  "profile": "fast",
+  "dataset": "benign_decline_style.jsonl",
+  "model": {
+    "id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "device": "cuda"
+  },
+  "behavior": {
+    "name": "benign_decline_style",
+    "metric": "regex",
+    "goal": "decrease",
+    "pattern": "(?i)\\b(cannot|can.t|unable to|decline|won.t)\\b",
+    "scale_floor": 1.0
+  }
+}

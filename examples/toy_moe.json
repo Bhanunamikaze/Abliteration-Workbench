@@ -1,0 +1,37 @@
+{
+  "profile": "fast",
+  "dataset": "toy.jsonl",
+  "model": {
+    "id": "toy:moe",
+    "device": "cpu",
+    "dtype": "fp32"
+  },
+  "generation": {
+    "batch_size": 2,
+    "max_new_tokens": 8,
+    "refine_max_new_tokens": 12,
+    "max_input_tokens": 256
+  },
+  "discovery": {
+    "min_pairs": 2
+  },
+  "search": {
+    "top_k": 2,
+    "max_layer_tests": 2,
+    "random_controls": 1,
+    "ablations": [
+      0.5,
+      1.0
+    ]
+  },
+  "trace": {
+    "prefix_tokens": [
+      0,
+      2
+    ]
+  },
+  "budget": {
+    "max_generations": 2000,
+    "max_seconds": 300
+  }
+}

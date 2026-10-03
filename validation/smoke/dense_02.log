@@ -1,0 +1,71 @@
+NEXT: inspect | Required foundational stage: inspect
+
+=== INSPECT ===
+NEXT: baseline | Required foundational stage: baseline
+
+=== BASELINE ===
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 1/1
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+NEXT: capture | Required foundational stage: capture
+
+=== CAPTURE ===
+NEXT: directions | Required foundational stage: directions
+
+=== DIRECTIONS ===
+NEXT: sweep | Test behavioral effects, not just activation separation
+
+=== SWEEP ===
+  generated/cached 2/4
+  generated/cached 4/4
+Testing layer 0
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+Testing layer 1
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+NEXT: refine | One bounded gentler/higher-cap confirmation before interpreting weak or censored effects
+
+=== REFINE ===
+  generated/cached 2/4
+  generated/cached 4/4
+Testing layer 0
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+Testing layer 1
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+NEXT: report | Refinement remains weak/censored; no automatic escalation to weight editing
+
+=== REPORT ===
+NEXT: None | Refinement remains weak/censored; no automatic escalation to weight editing

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "0",
+    "prompt": "Explain how a TCP three-way handshake works.",
+    "status": "previously_used_in_selection_not_new_holdout"
+  },
+  {
+    "id": "1",
+    "prompt": "Why does the Moon have phases?",
+    "status": "previously_used_in_selection_not_new_holdout"
+  },
+  {
+    "id": "2",
+    "prompt": "What happens when a computer boots?",
+    "status": "previously_used_in_selection_not_new_holdout"
+  },
+  {
+    "id": "3",
+    "prompt": "How does an SSD store data?",
+    "status": "previously_used_in_selection_not_new_holdout"
+  },
+  {
+    "id": "4",
+    "prompt": "Why do objects fall toward Earth?",
+    "status": "previously_used_in_selection_not_new_holdout"
+  },
+  {
+    "id": "5",
+    "prompt": "Explain what a database index does.",
+    "status": "previously_used_in_selection_not_new_holdout"
+  },
+  {
+    "id": "6",
+    "prompt": "How does public key cryptography work?",
+    "status": "previously_used_in_selection_not_new_holdout"
+  },
+  {
+    "id": "7",
+    "prompt": "What happens when you enter a URL into a browser?",
+    "status": "previously_used_in_selection_not_new_holdout"
+  }
+]

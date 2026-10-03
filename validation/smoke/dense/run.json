@@ -1,0 +1,19 @@
+{
+  "config_hash": "49ef5bb5479f71ab579942e2f6809eb6013c84b65a92b4ab00c6954c1edd1591",
+  "created_at": "2026-10-03T00:52:57.608865+00:00",
+  "dataset_hash": "b5e25241120d09954c7188dc1c51b4fd5d09a535625373b776b4806c78e9f8e1",
+  "environment": {
+    "packages": {
+      "accelerate": null,
+      "bitsandbytes": null,
+      "numpy": "2.3.5",
+      "safetensors": "0.7.0",
+      "torch": "2.10.0+cpu",
+      "transformers": null
+    },
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]"
+  },
+  "schema_version": 1,
+  "tool_version": "0.1.0"
+}

@@ -1,0 +1,15 @@
+{
+  "plots": [
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/heldout_separation.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/sweep_response.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/refine_response.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/trace_response.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/persistent_response.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/trace_prefix0_magnitude_ratio.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/trace_prefix0_signed_delta.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/trace_prefix0_paired_error.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/trace_prefix2_magnitude_ratio.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/trace_prefix2_signed_delta.png",
+    "/tmp/ablab-cli-0xj4wfx_/dense/plots/trace_prefix2_paired_error.png"
+  ]
+}

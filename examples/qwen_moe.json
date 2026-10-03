@@ -1,0 +1,18 @@
+{
+  "profile": "fast",
+  "dataset": "verbosity.jsonl",
+  "model": {
+    "id": "Qwen/Qwen1.5-MoE-A2.7B-Chat",
+    "device": "cuda",
+    "dtype": "bf16",
+    "quantization": "4bit"
+  },
+  "behavior": {
+    "name": "verbosity",
+    "metric": "tokens",
+    "goal": "decrease"
+  },
+  "generation": {
+    "batch_size": 1
+  }
+}

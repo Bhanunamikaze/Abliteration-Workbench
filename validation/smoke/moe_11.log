@@ -1,0 +1,22 @@
+
+=== TRACE ===
+  generated/cached 2/4
+  generated/cached 4/4
+L0/residual ablation=0.5
+  generated/cached 2/4
+  generated/cached 4/4
+L0/residual ablation=1.0
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+L3/residual ablation=0.5
+  generated/cached 2/4
+  generated/cached 4/4
+L3/residual ablation=1.0
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4
+  generated/cached 2/4
+  generated/cached 4/4

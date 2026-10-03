@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "snapshot_commit": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "verbosity": {
+    "source_run": "runs/qwen-legacy-region",
+    "test": [
+      {
+        "id": "test-00",
+        "baseline_tokens": 88,
+        "hook_tokens": 121,
+        "baseline_capped": false,
+        "hook_capped": false
+      },
+      {
+        "id": "test-01",
+        "baseline_tokens": 175,
+        "hook_tokens": 89,
+        "baseline_capped": false,
+        "hook_capped": false
+      },
+      {
+        "id": "test-02",
+        "baseline_tokens": 137,
+        "hook_tokens": 60,
+        "baseline_capped": false,
+        "hook_capped": false
+      },
+      {
+        "id": "test-03",
+        "baseline_tokens": 382,
+        "hook_tokens": 88,
+        "baseline_capped": false,
+        "hook_capped": false
+      },
+      {
+        "id": "test-04",
+        "baseline_tokens": 384,
+        "hook_tokens": 317,
+        "baseline_capped": true,
+        "hook_capped": false
+      },
+      {
+        "id": "test-05",
+        "baseline_tokens": 121,
+        "hook_tokens": 73,
+        "baseline_capped": false,
+        "hook_capped": false
+      },
+      {
+        "id": "test-06",
+        "baseline_tokens": 113,
+        "hook_tokens": 94,
+        "baseline_capped": false,
+        "hook_capped": false
+      },
+      {
+        "id": "test-07",
+        "baseline_tokens": 259,
+        "hook_tokens": 114,
+        "baseline_capped": false,
+        "hook_capped": false
+      }
+    ],
+    "mean_baseline_tokens": 207.375,
+    "mean_hook_tokens": 119.5,
+    "relative_mean_reduction": 0.42374924653405666,
+    "control_count": 4,
+    "control_absolute_drift_fraction": 0.0,
+    "hook_layers": [
+      13,
+      16,
+      18,
+      20,
+      22
+    ]
+  }
+}

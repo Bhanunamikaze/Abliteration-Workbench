@@ -1,0 +1,16 @@
+{
+  "files": [
+    "heldout_separation.png",
+    "sweep_response.png",
+    "refine_response.png",
+    "trace_response.png",
+    "persistent_response.png",
+    "trace_prefix0_magnitude_ratio.png",
+    "trace_prefix0_signed_delta.png",
+    "trace_prefix0_paired_error.png",
+    "trace_prefix2_magnitude_ratio.png",
+    "trace_prefix2_signed_delta.png",
+    "trace_prefix2_paired_error.png"
+  ],
+  "note": "Derived only from stored measurements; connecting lines are visual interpolation. Ratios do not prove representation reconstruction."
+}

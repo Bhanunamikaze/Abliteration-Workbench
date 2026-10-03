@@ -1,0 +1,446 @@
+[
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "validate",
+      "--config",
+      "examples/toy_dense.json"
+    ],
+    "returncode": 0,
+    "seconds": 0.003842932000225119
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "init",
+      "--config",
+      "examples/toy_dense.json",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense"
+    ],
+    "returncode": 0,
+    "seconds": 0.014110229999914736
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense"
+    ],
+    "returncode": 0,
+    "seconds": 1.341015153999706
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "inspect",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.00726536499996655
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "baseline",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.00640421999969476
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "capture",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.006301345999872865
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "directions",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.005937790999723802
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "sweep",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.006052869000086503
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "refine",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.005888637000225572
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "writers",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.28190375999975004
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "ablate",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.018768884999644797
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "trace",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.162397793999844
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "persistent",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.07455576299980748
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense",
+      "--stage",
+      "evaluate",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.14203909199977716
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "report",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense"
+    ],
+    "returncode": 0,
+    "seconds": 1.9505382150000514
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "plot",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense"
+    ],
+    "returncode": 0,
+    "seconds": 2.026521705999585
+  },
+  {
+    "fixture": "dense",
+    "argv": [
+      "ablab",
+      "status",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/dense"
+    ],
+    "returncode": 0,
+    "seconds": 0.009392494000167062
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "validate",
+      "--config",
+      "examples/toy_moe.json"
+    ],
+    "returncode": 0,
+    "seconds": 0.0026749989997369994
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "init",
+      "--config",
+      "examples/toy_moe.json",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe"
+    ],
+    "returncode": 0,
+    "seconds": 0.01343234800015125
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe"
+    ],
+    "returncode": 0,
+    "seconds": 1.2193333479999637
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "inspect",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.006976858000143693
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "baseline",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.006943185000181984
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "capture",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.006579578000128095
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "directions",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.011208414000066114
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "sweep",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.009099684000375419
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "refine",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.006476864999967802
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "writers",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.41326639399994747
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "ablate",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.020424027999979444
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "trace",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.24904216000004453
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "persistent",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.1978440339998997
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "run",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe",
+      "--stage",
+      "evaluate",
+      "--with-deps"
+    ],
+    "returncode": 0,
+    "seconds": 0.07702735400016536
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "report",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe"
+    ],
+    "returncode": 0,
+    "seconds": 2.0337190800000826
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "plot",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe"
+    ],
+    "returncode": 0,
+    "seconds": 2.0817152650001844
+  },
+  {
+    "fixture": "moe",
+    "argv": [
+      "ablab",
+      "status",
+      "--run",
+      "/tmp/ablab-cli-0xj4wfx_/moe"
+    ],
+    "returncode": 0,
+    "seconds": 0.008383716000025743
+  }
+]

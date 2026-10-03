@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abliteration-workbench"
+version = "0.1.0"
+description = "Abliteration workbench for configurable representation experiments and red-team research"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["numpy>=1.24", "torch>=2.5", "safetensors>=0.4.5"]
+
+[project.optional-dependencies]
+hf = ["transformers>=4.57,<6", "accelerate>=1.0", "sentencepiece>=0.2"]
+plots = ["matplotlib>=3.8"]
+yaml = ["PyYAML>=6"]
+quant = ["bitsandbytes>=0.45"]
+test = ["pytest>=8"]
+
+[project.scripts]
+abliteration = "ablationlab.cli:main"
+ablab = "ablationlab.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ablationlab*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = ["hf: uses optional Transformers package and randomly initialized tiny models", "integration: package workflow test"]

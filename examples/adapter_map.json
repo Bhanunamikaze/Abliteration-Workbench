@@ -1,0 +1,9 @@
+{
+  "model": {
+    "adapter": {
+      "layers": "model.layers",
+      "attention": "self_attn.o_proj",
+      "mlp": "mlp.down_proj"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{"id": "train-0", "split": "train", "neutral": "one", "positive": "one detail", "negative": "one brief"}
+{"id": "train-1", "split": "train", "neutral": "two", "positive": "two detail", "negative": "two brief"}
+{"id": "train-2", "split": "train", "neutral": "three", "positive": "three detail", "negative": "three brief"}
+{"id": "train-3", "split": "train", "neutral": "four", "positive": "four detail", "negative": "four brief"}
+{"id": "validation-0", "split": "validation", "neutral": "five", "positive": "five detail", "negative": "five brief"}
+{"id": "validation-1", "split": "validation", "neutral": "six", "positive": "six detail", "negative": "six brief"}
+{"id": "validation-2", "split": "validation", "neutral": "seven", "positive": "seven detail", "negative": "seven brief"}
+{"id": "validation-3", "split": "validation", "neutral": "eight", "positive": "eight detail", "negative": "eight brief"}
+{"id": "test-0", "split": "test", "neutral": "nine"}
+{"id": "test-1", "split": "test", "neutral": "ten"}
+{"id": "control-0", "split": "control", "neutral": "eleven"}

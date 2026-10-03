@@ -1,0 +1,97 @@
+prompt_id,prompt,ablation_strength,source_layer,tokens,baseline_tokens,delta_tokens,reduction_tokens,reduction_fraction,hit_limit,repeat4_ratio
+0,Explain how a TCP three-way handshake works.,0.25,16,232,227,5,-5,-0.022026431718061675,False,0.005434782608695676
+1,Why does the Moon have phases?,0.25,16,295,382,-87,87,0.22774869109947643,False,0.004273504273504258
+2,What happens when a computer boots?,0.25,16,400,355,45,-45,-0.1267605633802817,True,0.012820512820512775
+3,How does an SSD store data?,0.25,16,400,345,55,-55,-0.15942028985507245,True,0.019108280254777066
+4,Why do objects fall toward Earth?,0.25,16,165,164,1,-1,-0.006097560975609756,False,0.013513513513513487
+5,Explain what a database index does.,0.25,16,361,321,40,-40,-0.12461059190031153,False,0.0
+6,How does public key cryptography work?,0.25,16,400,400,0,0,0.0,True,0.0068259385665528916
+7,What happens when you enter a URL into a browser?,0.25,16,221,264,-43,43,0.16287878787878787,False,0.0
+0,Explain how a TCP three-way handshake works.,0.5,16,400,227,173,-173,-0.762114537444934,True,0.055335968379446654
+1,Why does the Moon have phases?,0.5,16,321,382,-61,61,0.15968586387434555,False,0.015503875968992276
+2,What happens when a computer boots?,0.5,16,400,355,45,-45,-0.1267605633802817,True,0.015923566878980888
+3,How does an SSD store data?,0.5,16,400,345,55,-55,-0.15942028985507245,True,0.006191950464396245
+4,Why do objects fall toward Earth?,0.5,16,179,164,15,-15,-0.09146341463414634,False,0.012499999999999956
+5,Explain what a database index does.,0.5,16,284,321,-37,37,0.11526479750778816,False,0.0040322580645161255
+6,How does public key cryptography work?,0.5,16,400,400,0,0,0.0,True,0.006514657980456029
+7,What happens when you enter a URL into a browser?,0.5,16,291,264,27,-27,-0.10227272727272728,False,0.004366812227074246
+0,Explain how a TCP three-way handshake works.,0.75,16,168,227,-59,59,0.2599118942731278,False,0.0
+1,Why does the Moon have phases?,0.75,16,378,382,-4,4,0.010471204188481676,False,0.01730103806228378
+2,What happens when a computer boots?,0.75,16,386,355,31,-31,-0.08732394366197183,False,0.0066006600660065695
+3,How does an SSD store data?,0.75,16,400,345,55,-55,-0.15942028985507245,True,0.006211180124223614
+4,Why do objects fall toward Earth?,0.75,16,195,164,31,-31,-0.18902439024390244,False,0.005747126436781658
+5,Explain what a database index does.,0.75,16,276,321,-45,45,0.14018691588785046,False,0.0
+6,How does public key cryptography work?,0.75,16,400,400,0,0,0.0,True,0.008955223880596996
+7,What happens when you enter a URL into a browser?,0.75,16,400,264,136,-136,-0.5151515151515151,True,0.0
+0,Explain how a TCP three-way handshake works.,1.0,16,169,227,-58,58,0.2555066079295154,False,0.007633587786259555
+1,Why does the Moon have phases?,1.0,16,323,382,-59,59,0.1544502617801047,False,0.027559055118110187
+2,What happens when a computer boots?,1.0,16,400,355,45,-45,-0.1267605633802817,True,0.0031645569620253333
+3,How does an SSD store data?,1.0,16,400,345,55,-55,-0.15942028985507245,True,0.0
+4,Why do objects fall toward Earth?,1.0,16,217,164,53,-53,-0.3231707317073171,False,0.010309278350515427
+5,Explain what a database index does.,1.0,16,203,321,-118,118,0.367601246105919,False,0.0
+6,How does public key cryptography work?,1.0,16,400,400,0,0,0.0,True,0.014836795252225476
+7,What happens when you enter a URL into a browser?,1.0,16,391,264,127,-127,-0.4810606060606061,False,0.0
+0,Explain how a TCP three-way handshake works.,0.25,13,400,227,173,-173,-0.762114537444934,True,0.03039513677811545
+1,Why does the Moon have phases?,0.25,13,400,382,18,-18,-0.04712041884816754,True,0.08445945945945943
+2,What happens when a computer boots?,0.25,13,286,355,-69,69,0.19436619718309858,False,0.0
+3,How does an SSD store data?,0.25,13,400,345,55,-55,-0.15942028985507245,True,0.0
+4,Why do objects fall toward Earth?,0.25,13,169,164,5,-5,-0.03048780487804878,False,0.006711409395973145
+5,Explain what a database index does.,0.25,13,252,321,-69,69,0.21495327102803738,False,0.00462962962962965
+6,How does public key cryptography work?,0.25,13,400,400,0,0,0.0,True,0.010309278350515427
+7,What happens when you enter a URL into a browser?,0.25,13,400,264,136,-136,-0.5151515151515151,True,0.0
+0,Explain how a TCP three-way handshake works.,0.5,13,400,227,173,-173,-0.762114537444934,True,0.04100946372239744
+1,Why does the Moon have phases?,0.5,13,144,382,-238,238,0.6230366492146597,False,0.0
+2,What happens when a computer boots?,0.5,13,300,355,-55,55,0.15492957746478872,False,0.0
+3,How does an SSD store data?,0.5,13,396,345,51,-51,-0.14782608695652175,False,0.022012578616352196
+4,Why do objects fall toward Earth?,0.5,13,169,164,5,-5,-0.03048780487804878,False,0.006711409395973145
+5,Explain what a database index does.,0.5,13,205,321,-116,116,0.3613707165109034,False,0.0
+6,How does public key cryptography work?,0.5,13,400,400,0,0,0.0,True,0.0
+7,What happens when you enter a URL into a browser?,0.5,13,232,264,-32,32,0.12121212121212122,False,0.0
+0,Explain how a TCP three-way handshake works.,0.75,13,381,227,154,-154,-0.6784140969162996,False,0.015290519877675823
+1,Why does the Moon have phases?,0.75,13,202,382,-180,180,0.4712041884816754,False,0.011695906432748537
+2,What happens when a computer boots?,0.75,13,357,355,2,-2,-0.005633802816901409,False,0.0
+3,How does an SSD store data?,0.75,13,400,345,55,-55,-0.15942028985507245,True,0.0031746031746031633
+4,Why do objects fall toward Earth?,0.75,13,243,164,79,-79,-0.4817073170731707,False,0.03686635944700456
+5,Explain what a database index does.,0.75,13,199,321,-122,122,0.38006230529595014,False,0.0
+6,How does public key cryptography work?,0.75,13,400,400,0,0,0.0,True,0.0
+7,What happens when you enter a URL into a browser?,0.75,13,226,264,-38,38,0.14393939393939395,False,0.0
+0,Explain how a TCP three-way handshake works.,1.0,13,369,227,142,-142,-0.6255506607929515,False,0.00952380952380949
+1,Why does the Moon have phases?,1.0,13,174,382,-208,208,0.5445026178010471,False,0.0
+2,What happens when a computer boots?,1.0,13,340,355,-15,15,0.04225352112676056,False,0.0
+3,How does an SSD store data?,1.0,13,347,345,2,-2,-0.005797101449275362,False,0.0036231884057971175
+4,Why do objects fall toward Earth?,1.0,13,346,164,182,-182,-1.1097560975609757,False,0.007518796992481258
+5,Explain what a database index does.,1.0,13,400,321,79,-79,-0.24610591900311526,True,0.014367816091954033
+6,How does public key cryptography work?,1.0,13,388,400,-12,12,0.03,False,0.0
+7,What happens when you enter a URL into a browser?,1.0,13,249,264,-15,15,0.056818181818181816,False,0.004716981132075526
+0,Explain how a TCP three-way handshake works.,0.25,18,226,227,-1,1,0.004405286343612335,False,0.0055248618784530246
+1,Why does the Moon have phases?,0.25,18,348,382,-34,34,0.08900523560209424,False,0.011194029850746245
+2,What happens when a computer boots?,0.25,18,351,355,-4,4,0.011267605633802818,False,0.0072727272727273196
+3,How does an SSD store data?,0.25,18,400,345,55,-55,-0.15942028985507245,True,0.006369426751592355
+4,Why do objects fall toward Earth?,0.25,18,255,164,91,-91,-0.5548780487804879,False,0.017316017316017285
+5,Explain what a database index does.,0.25,18,212,321,-109,109,0.3395638629283489,False,0.0052631578947368585
+6,How does public key cryptography work?,0.25,18,400,400,0,0,0.0,True,0.00692041522491349
+7,What happens when you enter a URL into a browser?,0.25,18,264,264,0,0,0.0,False,0.0
+0,Explain how a TCP three-way handshake works.,0.5,18,235,227,8,-8,-0.03524229074889868,False,0.0052631578947368585
+1,Why does the Moon have phases?,0.5,18,314,382,-68,68,0.17801047120418848,False,0.0429184549356223
+2,What happens when a computer boots?,0.5,18,308,355,-47,47,0.1323943661971831,False,0.0
+3,How does an SSD store data?,0.5,18,400,345,55,-55,-0.15942028985507245,True,0.009433962264150941
+4,Why do objects fall toward Earth?,0.5,18,223,164,59,-59,-0.3597560975609756,False,0.00990099009900991
+5,Explain what a database index does.,0.5,18,275,321,-46,46,0.14330218068535824,False,0.004081632653061273
+6,How does public key cryptography work?,0.5,18,400,400,0,0,0.0,True,0.0033003300330033403
+7,What happens when you enter a URL into a browser?,0.5,18,400,264,136,-136,-0.5151515151515151,True,0.0
+0,Explain how a TCP three-way handshake works.,0.75,18,237,227,10,-10,-0.04405286343612335,False,0.015544041450777257
+1,Why does the Moon have phases?,0.75,18,315,382,-67,67,0.17539267015706805,False,0.047008547008547064
+2,What happens when a computer boots?,0.75,18,313,355,-42,42,0.11830985915492957,False,0.01200000000000001
+3,How does an SSD store data?,0.75,18,400,345,55,-55,-0.15942028985507245,True,0.0
+4,Why do objects fall toward Earth?,0.75,18,212,164,48,-48,-0.2926829268292683,False,0.02645502645502651
+5,Explain what a database index does.,0.75,18,183,321,-138,138,0.42990654205607476,False,0.0
+6,How does public key cryptography work?,0.75,18,400,400,0,0,0.0,True,0.0
+7,What happens when you enter a URL into a browser?,0.75,18,398,264,134,-134,-0.5075757575757576,False,0.0031847133757961776
+0,Explain how a TCP three-way handshake works.,1.0,18,232,227,5,-5,-0.022026431718061675,False,0.005347593582887722
+1,Why does the Moon have phases?,1.0,18,385,382,3,-3,-0.007853403141361256,False,0.037288135593220306
+2,What happens when a computer boots?,1.0,18,400,355,45,-45,-0.1267605633802817,True,0.08424908424908428
+3,How does an SSD store data?,1.0,18,400,345,55,-55,-0.15942028985507245,True,0.0031645569620253333
+4,Why do objects fall toward Earth?,1.0,18,305,164,141,-141,-0.8597560975609756,False,0.018248175182481785
+5,Explain what a database index does.,1.0,18,195,321,-126,126,0.3925233644859813,False,0.0
+6,How does public key cryptography work?,1.0,18,400,400,0,0,0.0,True,0.0033670033670033517
+7,What happens when you enter a URL into a browser?,1.0,18,400,264,136,-136,-0.5151515151515151,True,0.0

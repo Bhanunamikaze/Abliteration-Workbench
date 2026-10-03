@@ -1,0 +1,15 @@
+{
+  "counts": {
+    "control": 1,
+    "test": 2,
+    "train": 4,
+    "validation": 4
+  },
+  "dataset_hash": "b5e25241120d09954c7188dc1c51b4fd5d09a535625373b776b4806c78e9f8e1",
+  "groups": 11,
+  "notes": [
+    "positive means condition A; this does not prove a pure behavioral feature",
+    "manual groups must isolate paraphrases/topics across splits"
+  ],
+  "rows": 11
+}

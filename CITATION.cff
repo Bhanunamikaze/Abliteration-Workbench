@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use Abliteration Workbench in research, please cite this software repository."
+type: software
+title: "Abliteration Workbench"
+authors:
+  - given-names: Bhanu
+    family-names: Namikaze
+repository-code: "https://github.com/Bhanunamikaze/Abliteration-Workbench"
+url: "https://github.com/Bhanunamikaze/Abliteration-Workbench"
+license: MIT
