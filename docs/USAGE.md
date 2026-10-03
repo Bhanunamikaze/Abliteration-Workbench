@@ -124,7 +124,7 @@ Open the run report or `stages/11_evaluate/result.json` and check:
 3. Random-direction control and no-op behavior where applicable.
 4. Example outputs for quality, factuality, and side effects.
 
-A single layer with a high direction score is not automatically a "refusal layer" or a "verbosity layer." The validated Qwen verbosity intervention uses residual layers **13, 16, 18, 20, and 22 together**. Its eight held-out test prompts averaged 207.4 tokens before and 119.5 after the hook; four controls showed no absolute drift. See the [benchmark summary](../validation/benchmark-data.json) and [README chart](../README.md#measured-results).
+A single layer with a high direction score is not automatically a "refusal layer" or a "verbosity layer." The validated Qwen verbosity intervention uses residual layers **13, 16, 18, 20, and 22 together**. Its eight held-out test prompts averaged 207.4 tokens before and 119.5 after the hook; four controls showed no absolute drift. See the [benchmark summary](../validation/benchmark-data.json) and [README chart](../README.md#measured-qwen-result).
 
 ## 6. Package and run a validated hook
 

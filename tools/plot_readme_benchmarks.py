@@ -1,7 +1,8 @@
-"""Render the README verbosity figure from the tracked benchmark summary."""
+"""Render README verbosity figures from tracked Qwen measurements."""
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 from pathlib import Path
 
@@ -43,16 +44,38 @@ def verbosity_plot(data: dict, destination: Path) -> None:
     plt.close(fig)
 
 
+def layer_screen_plot(source: Path, destination: Path) -> None:
+    with source.open(newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    layers = [int(row["layer"]) for row in rows]
+    separation = [float(row["standardized_separation"]) for row in rows]
+    fig, ax = plt.subplots(figsize=(8.4, 4.2))
+    ax.plot(layers, separation, marker="o", color=BASELINE, linewidth=2)
+    ax.set(xlabel="Raw transformer block index", ylabel="Held-out standardized separation")
+    ax.set_title("Qwen instruction contrast across 28 blocks", loc="left", fontweight="bold", pad=13)
+    ax.grid(color="#e5e8eb")
+    ax.set_axisbelow(True)
+    ax.spines[["top", "right"]].set_visible(False)
+    fig.text(.12, .015, "Representation screen only; behavioral tests selected the five-layer runtime hook.",
+             fontsize=8.5, color="#52606d")
+    fig.subplots_adjust(left=.12, right=.98, top=.85, bottom=.23)
+    fig.savefig(destination, dpi=190, facecolor="white")
+    plt.close(fig)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data", default="validation/benchmark-data.json")
+    parser.add_argument("--layer-data", default="validation/qwen-verbosity-layer-screen.csv")
     parser.add_argument("--out-dir", default="docs/assets")
     args = parser.parse_args()
     data = json.loads(Path(args.data).read_text())
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     verbosity_plot(data, out / "verbosity-qwen.png")
+    layer_screen_plot(Path(args.layer_data), out / "qwen-heldout-separation.png")
     print(out / "verbosity-qwen.png")
+    print(out / "qwen-heldout-separation.png")
     return 0
 
 

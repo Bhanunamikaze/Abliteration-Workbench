@@ -33,6 +33,22 @@ flowchart LR
 
 A strong direction score identifies a representation contrast. Behavioral tests and independent controls decide whether an intervention is useful. The automatic route may stop with `needs_data` or `needs_review`; it does not invent a winner.
 
+### What each run leaves behind
+
+Every run stores the resolved configuration, input snapshot, stage decisions, generation cache, measured outputs, and report under one `runs/NAME/` directory. The commands below let you inspect and reuse that evidence:
+
+| Need | Command |
+|---|---|
+| Check inputs and hardware | `validate`, `doctor` |
+| Preview, execute, resume, or inspect progress | `plan`, `run`, `status` |
+| Explore a new hypothesis without overwriting a run | `fork`, `reset`, `compare` |
+| Review evidence and figures | `report`, `plot` |
+| Apply a validated hook | `recipe`, `generate`, `bundle` |
+| Explore copied weight edits | `export-plan`, `export`, `evaluate-checkpoint` |
+| Reuse old data or measure local throughput | `import-legacy`, `import-directions`, `benchmark` |
+
+See the [complete command reference](docs/CLI.md) for options and prerequisites. The automatic planner has bounded budgets and records its reason for moving to each stage.
+
 ## Measured Qwen result
 
 A validated Qwen2.5-1.5B-Instruct **verbosity** hook uses residual layers **13, 16, 18, 20, and 22 together**. Eight held-out prompts averaged **207.4 tokens before** and **119.5 after** the hook, a **42.4% shorter mean**. Four control prompts showed zero absolute drift on the selected token-count metric. One original response reached the 384-token cap. The packaged runtime bundle replayed all **12/12** saved test and control outputs exactly.
@@ -40,6 +56,10 @@ A validated Qwen2.5-1.5B-Instruct **verbosity** hook uses residual layers **13, 
 ![Eight paired held-out Qwen responses before and after the verbosity hook](docs/assets/verbosity-qwen.png)
 
 These numbers support a response-length change on this small test set. They do not establish factual accuracy or the same effect on other models. See the [machine-readable benchmark data](validation/benchmark-data.json), [validation record](validation/VALIDATION.md), and [methodology](docs/METHODOLOGY.md). Regenerate the figure with `python3 tools/plot_readme_benchmarks.py`; completed runs also generate their own plots.
+
+The direction screen measured an instruction contrast across all 28 raw transformer blocks. Separation peaked around block 15, but that graph alone cannot identify a causal layer. The held-out behavior check selected the five-layer hook above. The [tracked layer measurements](validation/qwen-verbosity-layer-screen.csv) regenerate this figure with the same plotting command.
+
+![Held-out instruction-contrast separation across 28 Qwen transformer blocks; this is a screening measure, not a causal result](docs/assets/qwen-heldout-separation.png)
 
 ## Quick start
 
@@ -61,11 +81,15 @@ abliteration plot --run runs/qwen-verbosity
 
 Open `runs/qwen-verbosity/stages/12_report/report.html` to inspect the result. Stop with Ctrl+C and repeat `abliteration run --run runs/qwen-verbosity` to resume. Run `abliteration status --run runs/qwen-verbosity` to see completed stages and budgets.
 
+For a CPU-only software check, replace `examples/verbosity.json` with `examples/toy_dense.json` and use a separate run directory. The toy model checks the pipeline mechanics; its behavior is not evidence about Qwen.
+
 ## Bring your own behavior and model
 
 A dataset is JSON or JSONL with disjoint `train`, `validation`, `test`, and `control` groups. Training and validation rows pair contrasting instructions; `neutral` prompts measure the unprompted behavior. “Training” in this workflow means estimating an activation direction from examples. The [data guide](docs/DATA.md) includes the schema and validation rules.
 
 A config selects the scorer and search. For example, the included verbosity task uses a token-count metric with a decrease goal. You can also set `search.layers`, steering and ablation strengths, `generation.scope`, `generation.phase`, a model snapshot, output caps, and generation/time budgets. Start a new run or use `abliteration fork` when changing those settings so prior results remain attributable to their original config.
+
+If you study refusals, use refusal-specific labels and a scorer that evaluates the response itself. The included harmless decline-style sample demonstrates the mechanics of a refusal-like contrast; it does not validate a safety-refusal bypass. The workbench has **no confirmed refusal-layer result** from the Qwen experiment reported here.
 
 Built-in runtime adapters cover supported text-decoder layouts in **Qwen2/Qwen2.5, Llama, Mistral, GPT-2, GPT-NeoX, and some MoE families**. Model size still determines VRAM needs. Fused expert weights, multimodal models, encoder-decoder models, state-space models, and TPU execution need additional support. See the [model support matrix](docs/MODELS.md) for site-by-site details. Adapter support does not guarantee a behavioral result.
 

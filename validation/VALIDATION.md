@@ -4,7 +4,7 @@ Initial build date: 2026-10-03 (UTC). The initial fixture test record below is r
 
 ## Later real-model evidence
 
-The local Qwen2.5-1.5B-Instruct verbosity experiment (`runs/qwen-legacy-region`, excluded from Git) passed its held-out evaluation: eight test prompts averaged 207.375 original tokens and 119.5 hook tokens, four controls had no absolute metric drift, and a runtime bundle replayed all 12 saved outputs exactly. The [tracked result data](benchmark-data.json) and [README figure](../README.md#verbosity) summarize it. This validates that specific five-layer runtime hook on that small test; it does not generalize to every model or prompt.
+The local Qwen2.5-1.5B-Instruct verbosity experiment (`runs/qwen-legacy-region`, excluded from Git) passed its held-out evaluation: eight test prompts averaged 207.375 original tokens and 119.5 hook tokens, four controls had no absolute metric drift, and a runtime bundle replayed all 12 saved outputs exactly. The [tracked result data](benchmark-data.json), [layer-screen measurements](qwen-verbosity-layer-screen.csv), and [README figures](../README.md#measured-qwen-result) summarize it. This validates that specific five-layer runtime hook on that small test; it does not generalize to every model or prompt.
 
 The current `alter` environment also ran the full test suite after the plot addition; 138 tests passed. The historical 124-test fixture snapshot below remains an earlier build record.
 
