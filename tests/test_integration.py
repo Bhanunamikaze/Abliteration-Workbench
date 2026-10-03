@@ -74,6 +74,35 @@ def test_cache_roundtrip_and_actual_noop_generation(store):
         zero=eng.generate(records,p.bundle(),Intervention((1,),strength=0))
         assert [r["token_ids"] for r in first]==[r["token_ids"] for r in zero]
 
+@pytest.mark.integration
+def test_test_baseline_is_opt_in_and_invalidates_fork(store,tmp_path):
+    with store.lock():Pipeline(store).run_stage("baseline",with_deps=True)
+    original=store.result("baseline")
+    assert original["test_baseline_included"] is False
+    assert all(r["split"]!="test" for r in read_json(store.stage_dir("baseline")/"outputs.json"))
+    changed=deepcopy(store.config)
+    changed["evaluation"]["baseline_include_test"]=True
+    with store.lock():child=store.fork(tmp_path/"with_test_baseline",changed)
+    assert child.completed("inspect") and not child.completed("baseline")
+    with child.lock():Pipeline(child).run_stage("baseline")
+    result=child.result("baseline")
+    assert result["test_baseline_included"] is True
+    assert result["mean_score"]==original["mean_score"]
+    assert result["cap_rate"]==original["cap_rate"]
+    assert len([r for r in read_json(child.stage_dir("baseline")/"outputs.json") if r["split"]=="test"])==2
+
+@pytest.mark.integration
+def test_engine_records_custom_score_evidence(tmp_path,toy_config,dataset_file):
+    config=deepcopy(toy_config)
+    config["behavior"].update(metric="custom",plugin="examples.custom_scorer:score")
+    data,audit=load_dataset(dataset_file,2)
+    store=RunStore.create(tmp_path/"scorer_evidence",config,data,audit)
+    pipeline=Pipeline(store)
+    pipeline.engine.scorer.custom=lambda **kwargs:{"score":1,"details":{"status":"provisional"}}
+    with store.lock():pipeline.run_stage("baseline",with_deps=True)
+    outputs=read_json(store.stage_dir("baseline")/"outputs.json")
+    assert all(r["score"]==1 and r["score_details"]=={"status":"provisional"} for r in outputs)
+
 @pytest.mark.parametrize("bias",[False,True])
 @pytest.mark.parametrize("strength",[0,.25,1.])
 def test_weight_projection_matches_runtime(bias,strength):

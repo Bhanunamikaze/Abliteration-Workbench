@@ -13,7 +13,7 @@
 | **Test causal effects** | Sweep selected layers and strengths with additive steering, then test projection ablation at residual, attention-output, and MLP-output sites where the model adapter supports them. |
 | **Control intervention scope** | Apply a hook to the last valid token or all valid tokens; run it during prefill, decode, or both. Test named multi-layer regions when a single layer is insufficient. |
 | **Check alternative explanations** | Run no-op checks, random-direction controls, response-cap and repetition diagnostics, held-out prompts, control drift, and fixed-reference likelihood checks. |
-| **Automate and resume** | Use a bounded planner with fast, normal, or rigorous profiles. Stop and resume from cached generation batches; fork a run to change configuration without overwriting its evidence. |
+| **Automate and resume** | Choose conservative `strict` routing or bounded `explore` routing with writer, residual, trace, and persistent diagnostics. Stop and resume from cached generation batches; fork a run to change configuration without overwriting its evidence. |
 | **See the evidence** | Get stage artifacts, CSV/JSON measurements, local HTML/Markdown reports, and plots. The report records why the planner continued, stopped, or requested review. |
 | **Deploy a validated hook** | Package unchanged model files, direction tensors, a runtime runner, and an integrity manifest. The bundle command requires a passing held-out result and exact replay of saved outputs. |
 | **Explore weight edits explicitly** | Draft an export plan and project supported floating writer weights into a copied checkpoint, followed by an equivalence check. A runtime hook and a static weight edit have different semantics. |
@@ -32,6 +32,28 @@ flowchart LR
 ```
 
 A strong direction score identifies a representation contrast. Behavioral tests and independent controls decide whether an intervention is useful. The automatic route may stop with `needs_data` or `needs_review`; it does not invent a winner.
+
+### Run the bounded exploratory route
+
+Set `search.mode` to `explore` to continue after weak steering refinement. The route checks supported writer sites, residual ablation, fixed-prefix traces, bounded persistent regions, and a held-out candidate when the validation evidence warrants one. `strict` keeps the conservative stop after weak refinement. `search.reference="auto"` compares zero and calibrated negative-centroid targets at residual sites; writer outputs always use zero reference. A strong validation score change with capped generations is recorded as `promising_censored` and receives one configured higher-cap confirmation. Token and word scores need uncensored confirmation before a behavioral claim; other metrics retain a termination and quality caveat. A capped candidate cannot become a fully validated result while response termination remains unresolved.
+
+```json
+{
+  "search": {
+    "mode": "explore",
+    "reference": "auto",
+    "persistent_max_span_layers": 8,
+    "persistent_cluster_gap": 2
+  },
+  "generation": {
+    "max_new_tokens": 128,
+    "refine_max_new_tokens": 256,
+    "confirm_max_new_tokens": 512
+  }
+}
+```
+
+Add these keys to a complete experiment config with model, dataset, and behavior settings. Then run `abliteration init --config experiment.json --run runs/experiment` followed by `abliteration run --run runs/experiment`. The report places candidate status, reference, cap rate, confirmation, and the held-out selection reason before raw stage JSON. See the [usage guide](docs/USAGE.md) for interpretation and config details.
 
 ### What each run leaves behind
 

@@ -28,7 +28,7 @@ For a refusal-related study, token length is not a refusal metric. Use appropria
 
 ## Custom scorers
 
-Set `behavior.metric=custom` and `behavior.plugin=your_package.module:score`.
+Set `behavior.metric=custom` and `behavior.plugin=your_package.module:score`, or point directly to a local file such as `./refusal_scorer.py:score`. The file path is resolved relative to the source config, then stored as an absolute path in the run snapshot. A dotted module next to the config or its parent is also resolved to a local file, so `examples.refusal_scorer:score` works from the example config even when the CLI starts in another directory.
 
 ```python
 def score(*, text: str, token_count: int, record: dict) -> float:
@@ -36,6 +36,12 @@ def score(*, text: str, token_count: int, record: dict) -> float:
     return your_local_evaluation(text, record)
 ```
 
-The tool loads the module in the local process. No shell command, hosted LLM judge, or API key is required. Package your scorer in the same environment or make it importable with PYTHONPATH. Declared `behavior.goal` is `increase` or `decrease`; `scale_floor` stabilizes fractional effects when baseline scores are near zero.
+A custom scorer can also return `{"score": finite_number, "details": {...}}`. The details must be a JSON object with finite values; they are retained as `score_details` in scored outputs and CSVs. Existing scalar plugins continue to work. This lets a local classifier retain its probability, pinned model revision, and review flags alongside the response.
+
+The example [`refusal_scorer.py`](../examples/refusal_scorer.py) uses a pinned [small ModernBERT refusal classifier](https://huggingface.co/Crusadersk/quantsafe-refusal-modernbert) on CPU. It formats prompt/response exchanges using the publisher's [training template](https://huggingface.co/spaces/build-small-hackathon/quantsafe-certifier/blob/9b43ec6af125e0d55e3e087b81a76b5aaa64d5fe/semantic_refusal.py). Its binary scores are **provisional**. Review uncertain, empty, classifier-truncated, missing-context, multi-turn, and generation-capped answers, plus a sample of confident predictions. The encoder can miss partial compliance or a refusal followed by substantive assistance. A refusal prediction does not establish harmfulness, factuality, or correct policy application. For classifier validation, use independently labeled responses such as [Ai2's XSTest-Response](https://huggingface.co/datasets/allenai/xstest-response); its labels describe the supplied responses, not fresh model generations.
+
+When a row includes `prompt_label`, the example scorer flags predicted refusals on benign prompts and predicted compliance on harmful prompts for review. These flags prioritize inspection; they do not adjudicate the answer.
+
+The tool loads the scorer in the local process. No shell command, hosted LLM judge, or API key is required. Explicit file plugins need no `PYTHONPATH`; installed Python packages can still use dotted module names. `run.json` records the scorer entry point, source path, and SHA256 hash. Reopening an immutable run checks the current source against that fingerprint and rejects changed implementations. A scorer's imported dependencies and external model weights are separate inputs; pin those revisions within your plugin and record them in score details when they affect interpretation. Older runs without scorer provenance remain readable. Declared `behavior.goal` is `increase` or `decrease`; `scale_floor` stabilizes fractional effects when baseline scores are near zero.
 
 A regex score is binary pattern matching. It does not prove that an answer actually refused, followed policy, or provided a correct answer. Likewise keyword coverage does not establish factual correctness. All generated text is retained for review.

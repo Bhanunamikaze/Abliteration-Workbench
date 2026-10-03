@@ -86,3 +86,80 @@ def test_json_scorer(text,expected):
 def test_exact_and_contains():
     assert Scorer(dict(DEFAULTS["behavior"],metric="exact"))(" 42 ",1,{"expected":"42"})==1
     assert Scorer(dict(DEFAULTS["behavior"],metric="contains"))("SYN then ACK",4,{"required_terms":["SYN","ACK","FIN"]})==pytest.approx(2/3)
+
+def test_custom_scorer_preserves_evidence_and_scalar_api():
+    scorer=Scorer(dict(DEFAULTS["behavior"],metric="custom",plugin="examples.custom_scorer:score"))
+    scorer.custom=lambda **kwargs:{"score":1,"details":{"confidence":.7,"review_required":True}}
+    assert scorer("Example",1,{})==1.
+    assert scorer.evaluate("Example",1,{})=={"score":1.,"score_details":{"confidence":.7,"review_required":True}}
+    scorer.custom=lambda **kwargs:.25
+    assert scorer.evaluate("Example",1,{})=={"score":.25}
+
+@pytest.mark.parametrize("result",[
+    {"score":1}, {"score":1,"details":[]},
+    {"score":1,"details":{"confidence":float("nan")}},
+    {"score":1,"details":{"object":object()}},
+    {"score":float("inf"),"details":{}},
+])
+def test_custom_scorer_rejects_invalid_evidence(result):
+    scorer=Scorer(dict(DEFAULTS["behavior"],metric="custom",plugin="examples.custom_scorer:score"))
+    scorer.custom=lambda **kwargs:result
+    with pytest.raises(LabError):scorer.evaluate("Example",1,{})
+
+@pytest.mark.parametrize("text,probability,label,reasons",[
+    ("A response",.99,1,[]), ("An ambiguous response",.49,0,["low_confidence"]),
+    ("  ",.99,1,["empty_response"]), ("x"*600,.99,1,["classifier_input_truncated"]),
+])
+def test_local_refusal_scorer_review_flags(monkeypatch,text,probability,label,reasons):
+    from types import SimpleNamespace
+    from examples import refusal_scorer
+    class Tokenizer:
+        model_max_length=512
+        def __call__(self,text,**kwargs):return {"input_ids":list(range(len(text)))}
+    class Model:
+        def __call__(self,**kwargs):
+            return SimpleNamespace(logits=torch.log(torch.tensor([[1-probability,probability]])))
+    monkeypatch.setattr(refusal_scorer,"classifier",lambda:(Tokenizer(),Model(),1))
+    result=refusal_scorer.score(text=text,token_count=5,record={"neutral":[{"role":"user","content":"Question"}]})
+    assert result["score"]==label
+    assert result["details"]["refusal_probability"]==pytest.approx(probability)
+    assert result["details"]["review_reasons"]==reasons
+    assert result["details"]["status"]=="provisional"
+
+def test_local_refusal_scorer_uses_prompt_context(monkeypatch):
+    from types import SimpleNamespace
+    from examples import refusal_scorer
+    inputs=[]
+    class Tokenizer:
+        model_max_length=512
+        def __call__(self,text,**kwargs):
+            inputs.append(text)
+            return {"input_ids":[1]}
+    class Model:
+        def __call__(self,**kwargs):return SimpleNamespace(logits=torch.tensor([[0.,4.]]))
+    monkeypatch.setattr(refusal_scorer,"classifier",lambda:(Tokenizer(),Model(),1))
+    record={"neutral":[{"role":"user","content":"What does 'cannot' mean?"}]}
+    result=refusal_scorer.score(text="It expresses inability.",token_count=4,record=record)
+    assert inputs==["[USER]\nWhat does 'cannot' mean?\n\n[ASSISTANT]\nIt expresses inability."]*2
+    assert result["details"]["input"]=="prompt_response_exchange"
+    missing=refusal_scorer.score(text="An answer",token_count=4,record={})
+    assert "missing_prompt_context" in missing["details"]["review_reasons"]
+
+@pytest.mark.parametrize("prompt_label,probability,reason", [
+    ("benign", .99, "benign_prompt_predicted_refusal"),
+    ("harmful", .01, "harmful_prompt_predicted_compliance"),
+])
+def test_local_refusal_scorer_reviews_label_disagreements(monkeypatch,prompt_label,probability,reason):
+    from types import SimpleNamespace
+    from examples import refusal_scorer
+    class Tokenizer:
+        model_max_length=512
+        def __call__(self,text,**kwargs):return {"input_ids":[1]}
+    class Model:
+        def __call__(self,**kwargs):
+            return SimpleNamespace(logits=torch.log(torch.tensor([[1-probability,probability]])))
+    monkeypatch.setattr(refusal_scorer,"classifier",lambda:(Tokenizer(),Model(),1))
+    record={"prompt_label":prompt_label,"neutral":[{"role":"user","content":"Question"}]}
+    result=refusal_scorer.score(text="An answer",token_count=3,record=record)
+    assert result["details"]["review_required"] is True
+    assert reason in result["details"]["review_reasons"]

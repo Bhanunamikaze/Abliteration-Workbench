@@ -115,6 +115,10 @@ Configuration and `--set` overrides control the model, data, generation, and sea
 | `search.layers` | Restrict the initial behavioral layer search. |
 | `search.ablations`, `search.strengths` | Ablation and steering values to test. |
 | `search.custom_regions` | Supply named multi-layer hypotheses for explicit testing. |
+| `search.mode=strict\|explore` | Stop after weak refinement or continue bounded exploratory diagnostics. |
+| `search.reference=zero\|negative\|auto` | Residual ablation target; `auto` compares both when a calibrated negative centroid exists. Writer outputs use zero. |
+| `search.persistent_max_span_layers`, `search.persistent_cluster_gap` | Bound automatic contiguous regions built from candidate layers. |
+| `generation.confirm_max_new_tokens`, `search.max_cap_confirmations` | Limit higher-cap confirmation of strong censored candidates. |
 | `behavior.metric`, `behavior.goal` | Define what improvement means before evaluation. |
 
 For example, start a new run that tests selected layers and a different phase:
@@ -126,6 +130,33 @@ abliteration init --config examples/verbosity.json --run runs/qwen-decode-check 
 ```
 
 These controls create a different experiment. They do not transfer a validation result automatically. `eligible_layers` in the direction stage is a broad representation-separation screen; even all 28 Qwen layers can pass it. A layer becomes a useful behavioral candidate only after generation tests, controls, and held-out evaluation.
+
+For a complete automatic exploratory run, add these settings to a copy of an experiment config and initialize a new run:
+
+```json
+{
+  "search": {
+    "mode": "explore",
+    "reference": "auto",
+    "persistent_max_span_layers": 8,
+    "persistent_cluster_gap": 2,
+    "max_cap_confirmations": 1
+  },
+  "generation": {
+    "max_new_tokens": 128,
+    "refine_max_new_tokens": 256,
+    "confirm_max_new_tokens": 512
+  }
+}
+```
+
+```bash
+abliteration init --config experiment.json --run runs/experiment
+abliteration run --run runs/experiment
+abliteration report --run runs/experiment
+```
+
+The JSON fragment supplements the required model, dataset, and behavior fields. In `explore` mode, weak steering can continue through writer tests, residual ablation, fixed-prefix trace, bounded persistent regions, and held-out evaluation when an effect is present. `strict` retains the conservative weak-refinement stop. A strong capped result receives `promising_censored`, a finite higher-cap retry when configured, and a report caveat. Discrete or custom metrics can retain a behaviorally promising candidate after a capped retry; token and word metrics require uncensored confirmation before candidate promotion. The report's candidate table shows each residual target, number of layers, gain, random-control result, cap rate, confirmation, and the reason for the held-out selection. The plotted residual comparisons hatch capped candidates.
 
 Fork a completed run when changing settings so provenance remains intact:
 
@@ -143,6 +174,8 @@ Open the run report or `stages/11_evaluate/result.json` and check:
 2. Held-out gain, win rate, response caps, and control drift.
 3. Random-direction control and no-op behavior where applicable.
 4. Example outputs for quality, factuality, and side effects.
+
+The candidate `evidence_status` separates `promising`, `promising_censored`, `exploratory`, and `rejected` validation evidence. `evaluate` adds `candidate_source_stage`, `candidate_evidence_status`, `selection_reason`, and a held-out `evaluation_status`. A large discrete-score gain with `cap_rate=1` can remain a measured behavioral effect, while response termination and quality require review. For token and word metrics, the cap directly contaminates the score. A direction's representation separation, additive steering sensitivity, zero-coordinate removal, and negative-centroid projection are different claims. Removing a measured coordinate without changing the behavior does not establish that the behavior has no causal representation elsewhere.
 
 A single layer with a high direction score is not automatically a "refusal layer" or a "verbosity layer." The validated Qwen verbosity intervention uses residual layers **13, 16, 18, 20, and 22 together**. Its eight held-out test prompts averaged 207.4 tokens before and 119.5 after the hook; four controls showed no absolute drift. See the [benchmark summary](../validation/benchmark-data.json) and [README chart](../README.md#measured-qwen-result).
 
@@ -169,6 +202,15 @@ abliteration generate --run runs/qwen-verbosity --recipe verbosity-recipe.json \
 Copied weight projection is a separate, explicit operation. A residual, last-token hook cannot generally be converted into an equivalent static weight edit; an empty export plan can therefore be correct. See [CLI.md](CLI.md) and [METHODOLOGY.md](METHODOLOGY.md).
 
 ## 7. Benchmark refusal behavior
+
+For the Llama 3.2 3B baseline, use the existing pipeline with [`llama32_baseline.json`](../examples/llama32_baseline.json). Provide its dataset under `runs/llama32-baseline-prompts.jsonl` using the [standard split contract](DATA.md). The config enables vanilla test collection and the local semantic scorer; it contains no selected layers. [`refusal_controls.jsonl`](../examples/refusal_controls.jsonl) supplies 50 ordinary benign controls. Keep benchmark provenance and categories with the prompt rows, and isolate related groups across splits.
+
+```bash
+python -m ablationlab init --config examples/llama32_baseline.json --run runs/llama32-refusal
+python -m ablationlab run --run runs/llama32-refusal --stage baseline --with-deps
+```
+
+`stages/02_baseline/outputs.json` retains responses, token IDs, termination flags, scores, and classifier evidence. Join its IDs with `dataset.json` to summarize safety, over-refusal, and ordinary-control cohorts separately; exclude benign schema/contrast examples from benchmark percentages. The scorer's `score=1` predicts refusal and `score=0` predicts non-refusal. Review these predictions before publishing a rate. This command stops at baseline measurement; no capture, search, or model training is run.
 
 For a small independent comparison, use [Röttger et al.'s XSTest](https://github.com/paul-rottger/xstest). Put its CC-BY-4.0 `xstest_prompts.csv` under `runs/benchmarks/`, then evaluate a packaged hook:
 

@@ -7,6 +7,7 @@ import shutil
 import time
 from . import __version__
 from .util import LabError, BudgetReached, now, digest, file_hash, write_json, read_json, append_jsonl, read_journal, environment
+from .metrics import scorer_provenance
 
 STAGES = ["inspect", "baseline", "capture", "directions", "sweep", "refine", "writers", "ablate", "trace", "persistent", "evaluate", "report"]
 DEPS = {"inspect": [], "baseline": ["inspect"], "capture": ["inspect"],
@@ -36,6 +37,11 @@ class RunStore:
         self.config = read_json(self.root / "config.json")
         if digest(self.config) != self.meta["config_hash"]:
             raise LabError("config.json was edited in place. Use ablab fork with --set overrides instead.")
+        if "scorer_provenance" in self.meta:
+            expected = self.meta["scorer_provenance"]
+            actual = scorer_provenance(self.config["behavior"]["plugin"])
+            if actual != expected:
+                raise LabError("Custom scorer implementation changed since run initialization. Restore its source or initialize a new run; the existing run is immutable.")
         self.started = time.monotonic()
         self.prior_seconds = float(self.state().get("seconds_spent", 0.0))
         self.cache_path = self.root / "cache/generations.jsonl"
@@ -46,15 +52,20 @@ class RunStore:
         root = Path(root).resolve()
         if root.exists() and any(root.iterdir()):
             raise LabError(f"Run directory is not empty: {root}")
+        provenance = (scorer_provenance(config["behavior"]["plugin"])
+                      if config["behavior"]["metric"] == "custom" else None)
         root.mkdir(parents=True, exist_ok=True)
         (root / "cache").mkdir()
         write_json(root / "dataset.json", dataset)
         write_json(root / "dataset_audit.json", audit)
         config = dict(config, dataset="dataset.json")
         write_json(root / "config.json", config)
-        write_json(root / "run.json", {"schema_version": 1, "tool_version": __version__,
-                   "created_at": now(), "config_hash": digest(config), "dataset_hash": digest(dataset),
-                   "environment": environment()})
+        metadata = {"schema_version": 1, "tool_version": __version__,
+                    "created_at": now(), "config_hash": digest(config), "dataset_hash": digest(dataset),
+                    "environment": environment()}
+        if provenance is not None:
+            metadata["scorer_provenance"] = provenance
+        write_json(root / "run.json", metadata)
         write_json(root / "state.json", {"stages": {}, "seconds_spent": 0.0, "generation_count": 0})
         return cls(root)
 
@@ -167,11 +178,16 @@ class RunStore:
         if self.cache_path.exists(): shutil.copy2(self.cache_path, dest.cache_path)
         old,new=self.config,dest.config
         stable_model=old["model"]==new["model"] and old.get("identity_schema",1)==new.get("identity_schema",1)
-        stable_gen=old["generation"]==new["generation"]
+        # A confirmation ceiling chooses future jobs; it does not change
+        # baseline generation or activation capture. Old snapshots omit it.
+        def generation_identity(c):
+            return {k:v for k,v in c["generation"].items() if k!="confirm_max_new_tokens"}
+        stable_gen=generation_identity(old)==generation_identity(new)
         stable_discovery=old["discovery"]==new["discovery"]
+        stable_baseline_test=old["evaluation"].get("baseline_include_test",False)==new["evaluation"].get("baseline_include_test",False)
         preserve=[]
         if stable_model: preserve.append("inspect")
-        if stable_model and stable_gen and old["behavior"]==new["behavior"]:preserve.append("baseline")
+        if stable_model and stable_gen and stable_baseline_test and old["behavior"]==new["behavior"]:preserve.append("baseline")
         if stable_model and stable_gen:preserve.append("capture")
         if stable_model and stable_gen and stable_discovery and old["behavior"]==new["behavior"]:preserve.append("directions")
         state=dest.state()

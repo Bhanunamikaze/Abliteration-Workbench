@@ -43,7 +43,11 @@ class Engine:
     def generate(self,records,bundle=None,spec=None,max_new_tokens=None):
         b=self.backend
         config=self.store.config
-        signature={"backend":b.identity,"generation":config["generation"],
+        # Confirmation is a routing ceiling, not part of one generation's
+        # identity. Omitting it also keeps cache keys from pre-confirmation runs
+        # reusable when every actual generation parameter is unchanged.
+        generation_identity={k:v for k,v in config["generation"].items() if k!="confirm_max_new_tokens"}
+        signature={"backend":b.identity,"generation":generation_identity,
                    "max_new_tokens":max_new_tokens or config["generation"]["max_new_tokens"],
                    "directions":bundle.fingerprint() if bundle else None,
                    "intervention":spec.serial() if spec else None}
@@ -64,7 +68,7 @@ class Engine:
                                     request=signature,created_at=now())
                     self.store.put_generation(response)
             for r,response in zip(chunk,responses):
-                row={**response,"score":self.scorer(response["text"],response["tokens"],r),
+                row={**response,**self.scorer.evaluate(response["text"],response["tokens"],r),
                      **lexical_checks(response["text"],r)}
                 all_results.append(row)
             print(f"  generated/cached {min(start+batch_size,len(records))}/{len(records)}",flush=True)

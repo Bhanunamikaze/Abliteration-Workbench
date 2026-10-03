@@ -1,0 +1,29 @@
+{
+  "profile": "fast",
+  "dataset": "../runs/llama32-baseline-prompts.jsonl",
+  "model": {
+    "id": "meta-llama/Llama-3.2-3B-Instruct",
+    "revision": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+    "device": "cuda",
+    "dtype": "bf16",
+    "local_files_only": true,
+    "quantization": "none"
+  },
+  "generation": {
+    "batch_size": 4,
+    "max_new_tokens": 256,
+    "max_input_tokens": 2048,
+    "seed": 17
+  },
+  "behavior": {
+    "name": "refusal_baseline",
+    "metric": "custom",
+    "plugin": "examples.refusal_scorer:score"
+  },
+  "evaluation": {
+    "baseline_include_test": true
+  },
+  "discovery": {
+    "min_pairs": 2
+  }
+}

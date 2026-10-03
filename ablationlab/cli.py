@@ -99,7 +99,8 @@ def execute(a):
         from .planner import choose_next,apply_override
         results={s:store.result(s) for s in STAGES if store.completed(s)}
         order=sorted(results,key=lambda s:store.state()["stages"][s].get("ended_at",""))
-        decision=apply_override(choose_next(results),order,store.config["search"]["overrides"])
+        decision=apply_override(choose_next(results, mode=store.config["search"].get("mode","strict")),
+                                order,store.config["search"]["overrides"])
         print(dumps({"next":decision.serial(),"stages":STAGES,"budget":store.config["budget"],
                     "note":"Future stages depend on measurements; this is not a fabricated complete run plan"},True));return 0
     if a.command=="unlock":

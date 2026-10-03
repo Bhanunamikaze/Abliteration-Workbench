@@ -16,6 +16,7 @@ def plot_run(store, destination=None) -> list[str]:
     output = Path(destination) if destination else store.root / "plots"
     output.mkdir(parents=True, exist_ok=True)
     paths = []
+    candidate_metadata = []
 
     def save(name, xlabel, ylabel, title):
         plt.xlabel(xlabel)
@@ -41,6 +42,9 @@ def plot_run(store, destination=None) -> list[str]:
         file = store.stage_dir("evaluate") / "outputs.json"
         if file.exists():
             evaluated = read_json(file)
+            evaluation = store.result("evaluate")
+            test_cap = evaluation.get("test", {}).get("cap_rate", 0)
+            selection_status = evaluation.get("candidate_evidence_status", "")
             for split, name in (("test", "heldout_response.png"), ("control", "control_response.png")):
                 rows = [row for row in evaluated if row.get("split") == split]
                 if not rows:
@@ -56,8 +60,9 @@ def plot_run(store, destination=None) -> list[str]:
                 plt.yticks(range(len(rows)), [str(row["id"])[:28] for row in rows])
                 plt.gca().invert_yaxis()
                 plt.legend(loc="best")
+                caution = " — CENSORED" if split == "test" and (test_cap > store.config["search"]["max_cap_rate"] or "censored" in selection_status) else ""
                 save(name, f"{store.config['behavior']['metric']} score", "Example ID",
-                     f"{split.title()}: paired original and intervention scores")
+                     f"{split.title()}: paired original and intervention scores{caution}")
 
     for stage in ("sweep", "refine"):
         if not store.completed(stage):
@@ -92,17 +97,60 @@ def plot_run(store, destination=None) -> list[str]:
         entries = store.result(stage).get("summary", [])
         groups = defaultdict(list)
         for row in entries:
-            groups[row["label"]].append(row)
+            intervention = row.get("intervention", {})
+            reference = intervention.get("reference", "zero")
+            groups[(row.get("label", "candidate"), reference)].append(row)
+            candidate_metadata.append({"stage": stage, "label": row.get("label"),
+                                       "layers": intervention.get("layers"), "site": intervention.get("site"),
+                                       "reference": reference, "strength": intervention.get("strength"),
+                                       "evidence_status": row.get("evidence_status", "legacy unclassified"),
+                                       "cap_rate": row.get("cap_rate"),
+                                       "confirmation": row.get("confirmation")})
         if groups:
             plt.figure(figsize=(11, 6))
-            for label, series in sorted(groups.items()):
+            censored_count = 0
+            for (label, reference), series in sorted(groups.items()):
                 series = sorted(series, key=lambda r: r["intervention"]["strength"])
                 x = [0.0] + [r["intervention"]["strength"] for r in series]
                 y = [series[0]["mean_baseline"]] + [r["mean_intervention"] for r in series]
-                plt.plot(x, y, marker="o", label=label)
+                line, = plt.plot(x, y, marker="o", label=f"{label} · {reference}")
+                censored = [r for r in series if r.get("evidence_status") == "promising_censored"
+                            or r.get("cap_rate", 0) > store.config["search"]["max_cap_rate"]]
+                censored_count += len(censored)
+                if censored:
+                    plt.scatter([r["intervention"]["strength"] for r in censored],
+                                [r["mean_intervention"] for r in censored],
+                                facecolors="none", edgecolors=line.get_color(), s=140, linewidths=2, zorder=5)
             plt.legend(ncol=2)
             save(f"{stage}_response.png", "Fractional projection removal", f"Mean {store.config['behavior']['metric']} score",
-                 f"{stage.title()}: behavior measurement, not quality certification")
+                 f"{stage.title()}: measured behavior" + (f" · {censored_count} capped/censored points (rings)" if censored_count else ""))
+
+        # Compare geometrically distinct residual targets only for matched
+        # layers and strengths. Missing pairs are omitted rather than inferred.
+        paired = defaultdict(dict)
+        for row in entries:
+            spec = row.get("intervention", {})
+            if spec.get("site") != "residual" or spec.get("reference") not in {"zero", "negative"}:
+                continue
+            key = (tuple(spec.get("layers", [])), spec.get("strength"), spec.get("operation"))
+            paired[key][spec["reference"]] = row
+        comparison = [(key, values) for key, values in paired.items() if {"zero", "negative"} <= values.keys()]
+        if comparison:
+            comparison.sort()
+            plt.figure(figsize=(max(8, 1.2 * len(comparison) + 3), 5))
+            positions = list(range(len(comparison)))
+            for offset, reference, color in ((-.18, "zero", "#2563a6"), (.18, "negative", "#d97728")):
+                values = [pair[reference].get("gain_fraction_of_baseline_mean", 0) for _, pair in comparison]
+                bars = plt.bar([position + offset for position in positions], values, width=.34,
+                               label=reference, color=color)
+                for bar, (_, pair) in zip(bars, comparison):
+                    row = pair[reference]
+                    if row.get("evidence_status") == "promising_censored" or row.get("cap_rate", 0) > store.config["search"]["max_cap_rate"]:
+                        bar.set_hatch("///")
+            plt.xticks(positions, [f"{','.join(map(str, key[0]))}\nα={key[1]}" for key, _ in comparison])
+            plt.legend(title="Residual reference")
+            save(f"{stage}_reference_comparison.png", "Layers and strength", "Gain fraction of baseline mean",
+                 f"{stage.title()}: zero vs negative residual target (hatched = censored)")
 
     if store.completed("trace"):
         rows = store.result("trace").get("projection_summary", [])
@@ -129,5 +177,6 @@ def plot_run(store, destination=None) -> list[str]:
                 else:
                     plt.close()
     write_json(output / "plot_manifest.json", {"files": [Path(p).name for p in paths],
+              "candidate_metadata": candidate_metadata,
               "note": "Derived only from stored measurements; connecting lines are visual interpolation. Ratios do not prove representation reconstruction."})
     return paths

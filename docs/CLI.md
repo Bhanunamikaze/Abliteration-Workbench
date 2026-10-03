@@ -39,11 +39,14 @@ The complete resolved schema is in `ablationlab/config.py`; every run stores its
 
 - `model`: checkpoint, pinned `revision`, dtype/device, attention implementation, optional bitsandbytes quantization, explicit offload, adapter path overrides, or custom backend factory.
 - `behavior`: name, actual scorer, intended increase/decrease, regex/custom scorer configuration, normalization floor.
-- `generation`: batch, output/input ceilings, seed, `scope=last|all`, `phase=prefill|decode|both`, refinement ceiling.
+- `generation`: batch, output/input ceilings, seed, `scope=last|all`, `phase=prefill|decode|both`, refinement ceiling, and `confirm_max_new_tokens` for one bounded retry of a promising capped result. Baseline and intervention use the same ceiling in each comparison.
 - `discovery`: mean contrast or mean plus paired-residual SVD, rank, minimum paired examples.
-- `search`: automatic or explicit layers, top-k, symmetric steering grid, ablation strengths, zero/negative centroid reference, randomized controls, evidence thresholds, permitted persistent regions and route overrides.
+- `search`: automatic or explicit layers, top-k, symmetric steering grid, ablation strengths, residual `reference=zero|negative|auto`, randomized controls, evidence thresholds, permitted persistent regions and route overrides. `mode=strict` preserves conservative routing; `mode=explore` continues bounded writer, residual ablation, trace, persistent, and evaluation diagnostics after weak steering. These diagnostics retain their evidence status and do not automatically promote a winner.
+- `search.persistent_max_span_layers=8` limits automatically generated contiguous spans. `persistent_cluster_gap=2` groups nearby candidate layers. Sparse peaks remain an exact layer set, while an oversized contiguous span requires an explicit `custom_regions` entry. Each candidate records its modified layer count and region width.
+- `search.max_cap_confirmations=1` limits higher-ceiling retries of a promising capped candidate; values from 0 to 2 are accepted. `0` disables the retry. A capped result can remain `promising_censored` even after a retry and still requires quality review before validation.
+- `search.random_controls=0` skips specificity measurement; such effects stay exploratory and cannot become `validated_candidate` automatically.
 - `search.custom_regions`: optional named layer lists for an explicit persistent diagnostic. These are manual hypotheses, not automatically selected winners. For example: `--set 'search.regions=[]' --set 'search.custom_regions=[{"label":"legacy_set","layers":[13,16,18,20,22]}]'`.
-- `evaluation`: fixed-reference token count and allowed control NLL increase.
+- `evaluation`: fixed-reference token count and allowed control NLL increase. `baseline_include_test=false` keeps test prompts out of the baseline stage by default; explicitly setting it to `true` also retains vanilla test responses in that stage. Test scores do not enter the baseline validation summary. This exposes test responses, so later adaptive work needs a fresh held-out set.
 - `trace`: matched baseline-prefix lengths, denominator floor for coordinate diagnostics.
 - `budget`: generation and wall-clock ceilings, checked between batches.
 
@@ -57,6 +60,28 @@ abliteration init --config examples/verbosity.json --run runs/custom \
   --set 'generation.phase="both"' \
   --set 'model.dtype="fp16"'
 ```
+
+For an end-to-end exploratory run, put these values in the source config or pass them to `init`:
+
+```json
+{
+  "search": {
+    "mode": "explore",
+    "reference": "auto",
+    "persistent_max_span_layers": 8,
+    "persistent_cluster_gap": 2,
+    "max_cap_confirmations": 1
+  },
+  "generation": {"confirm_max_new_tokens": 1024}
+}
+```
+
+```bash
+abliteration init --config experiment.json --run runs/experiment
+abliteration run --run runs/experiment
+```
+
+`reference=auto` compares zero projection with a measured negative-class centroid where residual calibration exists. Writer outputs always use zero reference. An imported, uncalibrated direction cannot supply a negative centroid. A geometric coordinate removal alone does not prove that the coordinate is behaviorally necessary.
 
 `scope=all` edits every currently processed nonpadding token. During cached decoding the current sequence ordinarily contains one token. `phase=decode` deliberately leaves prompt prefill untouched. The chosen scope is part of cache/provenance, not a hidden optimization.
 
@@ -90,9 +115,9 @@ An override does not waive dependencies or relabel a weak result as confirmed. `
 
 **No eligible direction:** inspect paired instructions, captured site and standardized validation metrics. A toy fixture is deliberately untrained. Weak real data may need more pairs, better matching, or a different observable. Automatic analysis may correctly stop.
 
-**Lots of length caps:** observed counts are censored. Use a larger ceiling in a fork or inspect shorter neutral test tasks. Do not treat `384` as the model's natural completion length.
+**Lots of length caps:** observed counts are censored. A strong discrete-metric effect is retained as `promising_censored` and retried within the configured ceiling; termination quality remains unconfirmed if it still caps. Length metrics need uncensored confirmation for a behavioral claim. Do not treat `384` as the model's natural completion length.
 
-**Automatic run does not visit every stage:** it is conditional. Use an explicit stage for a diagnostic, or a manual route, rather than forcing automatic scientific conclusions.
+**Automatic run does not visit every stage:** it is conditional. Set `search.mode=explore` to continue bounded diagnostics after weak steering, or use an explicit stage or manual route for a particular hypothesis. `strict` remains the default.
 
 **Imported vectors stop automatic progression:** old 03 files lack full revision/precision/capture metadata and centroids. Recapture in a fresh run for full calibration. Manual exploratory use is still available; the legacy final layer is excluded unless its raw-block origin is known.
 

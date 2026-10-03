@@ -14,6 +14,7 @@ from ablationlab.pipeline import Pipeline
  ('search','min_effect_fraction',float('nan')),('search','refine_strength_factor',float('inf')),
  ('trace','denominator_floor',0),('trace','denominator_floor',float('nan')),
  ('budget','max_generations',True),('evaluation','reference_tokens',-.5),
+ ('evaluation','baseline_include_test',1),
 ])
 def test_strict_numeric_config(toy_config,section,key,value):
     toy_config[section][key]=value
