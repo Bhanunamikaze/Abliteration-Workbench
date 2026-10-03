@@ -63,25 +63,118 @@ The direction screen measured an instruction contrast across all 28 raw transfor
 
 ## Quick start
 
-Use Python 3.10+ and CUDA-enabled PyTorch for the Qwen example. The repository contains code and example data, not model weights.
+This example tests **shorter responses** on [Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct). You need Python 3.10+, Git, an NVIDIA GPU with enough memory for the model and experiment, and a CUDA-enabled PyTorch build. The commands below use a Linux/macOS shell. The repository includes the example prompts; it does not include Qwen's weights. For a CPU-only pipeline check, see the [toy run](#no-gpu-try-the-toy-run) below.
+
+### 1. Install in a virtual environment
 
 ```bash
-conda activate alter
 git clone https://github.com/Bhanunamikaze/Abliteration-Workbench.git
 cd Abliteration-Workbench
-python3 -m pip install -e '.[hf,plots,test]'
-abliteration doctor
-abliteration validate --config examples/verbosity.json
-abliteration init --config examples/verbosity.json --run runs/qwen-verbosity
-abliteration plan --run runs/qwen-verbosity
-abliteration run --run runs/qwen-verbosity
-abliteration report --run runs/qwen-verbosity
-abliteration plot --run runs/qwen-verbosity
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
 ```
 
-Open `runs/qwen-verbosity/stages/12_report/report.html` to inspect the result. Stop with Ctrl+C and repeat `abliteration run --run runs/qwen-verbosity` to resume. Run `abliteration status --run runs/qwen-verbosity` to see completed stages and budgets.
+Install the CUDA build of PyTorch for your machine using the [official PyTorch selector](https://pytorch.org/get-started/locally/), then install the workbench and its Hugging Face and plotting dependencies:
 
-For a CPU-only software check, replace `examples/verbosity.json` with `examples/toy_dense.json` and use a separate run directory. The toy model checks the pipeline mechanics; its behavior is not evidence about Qwen.
+```bash
+python3 -m pip install -e '.[hf,plots]'
+abliteration doctor
+```
+
+`doctor` should report `cuda_available: true` for this Qwen config. If it reports `false`, fix the PyTorch/GPU setup before starting the model run. Activate `.venv` again in each new shell.
+
+### 2. Check model access
+
+The example Qwen repository is public, so a Hugging Face account or token is **not required** to download it. Transformers fetches the checkpoint on the first model-loading command. You can check Hub connectivity with a small file first:
+
+```bash
+hf download Qwen/Qwen2.5-1.5B-Instruct config.json
+```
+
+For a **gated or private** model, obtain access on its model page, run `hf auth login`, and check the account with `hf auth whoami` before starting the experiment. The Hugging Face CLI stores the credential outside this repository; do not put tokens in config files. A local checkpoint path needs no Hub login.
+
+### 3. Inspect the included inputs
+
+[`examples/verbosity.json`](examples/verbosity.json) is the ready-to-run config:
+
+```json
+{
+  "profile": "fast",
+  "dataset": "verbosity.jsonl",
+  "model": {
+    "id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "device": "cuda",
+    "dtype": "bf16"
+  },
+  "behavior": {
+    "name": "verbosity",
+    "metric": "tokens",
+    "goal": "decrease"
+  }
+}
+```
+
+`model.id` is the Hugging Face `owner/model` identifier or a local checkpoint path. `dataset` points to [`examples/verbosity.jsonl`](examples/verbosity.jsonl), resolved relative to the config file. That file has 16 training pairs, 8 validation pairs, 8 test prompts, and 4 control prompts. Each training pair asks the same question with longer and shorter instructions; the neutral version measures the unprompted response. A training row looks like this (the actual file uses one JSON object per line):
+
+```json
+{
+  "id": "train-00",
+  "group": "train-topic-00",
+  "split": "train",
+  "neutral": [{"role": "user", "content": "Why do airplanes fly?"}],
+  "positive": [
+    {"role": "system", "content": "Explain thoroughly with useful detail."},
+    {"role": "user", "content": "Why do airplanes fly?"}
+  ],
+  "negative": [
+    {"role": "system", "content": "Explain briefly without extra detail."},
+    {"role": "user", "content": "Why do airplanes fly?"}
+  ]
+}
+```
+
+See the [data format](docs/DATA.md) before replacing the example with your own prompts; validation, test, and control groups must also be present.
+
+### 4. Validate, run, and inspect
+
+`validate` checks the config and paired data without loading Qwen. `init` freezes the inputs in a new run directory. `run` then downloads/loads the model as needed and executes the bounded experiment:
+
+```bash
+abliteration validate --config examples/verbosity.json
+abliteration init --config examples/verbosity.json --run runs/verbosity-first
+abliteration plan --run runs/verbosity-first
+abliteration run --run runs/verbosity-first
+abliteration status --run runs/verbosity-first
+abliteration report --run runs/verbosity-first
+abliteration plot --run runs/verbosity-first
+```
+
+Open `runs/verbosity-first/stages/12_report/report.html` and the images in `runs/verbosity-first/plots/`. Read the held-out result and controls before treating a candidate as useful. A run can end in `needs_data` or `needs_review`; it may not produce a passing hook. Stop with Ctrl+C and repeat the same `abliteration run` command to resume from cached batches.
+
+To use another supported model, change `model.id` in a copy of the config, or pass an override to **both** `validate` and `init`:
+
+```bash
+abliteration validate --config examples/verbosity.json --set 'model.id="ORG/MODEL"'
+abliteration init --config examples/verbosity.json --run runs/my-model \
+  --set 'model.id="ORG/MODEL"'
+abliteration run --run runs/my-model
+```
+
+`--config` selects the experiment inputs, `--run` selects its output directory, and `--set` changes a config value before the run snapshot is created. `run` reads the saved snapshot, so changing a model later requires a **new run** or `fork`. Set `model.device` and `model.dtype` for the target hardware; if BF16 is unsupported, use `--set 'model.dtype="fp16"'` in both `validate` and `init`. Check the [supported architectures](docs/MODELS.md).
+
+### No GPU? Try the toy run
+
+The bundled tiny model needs no Hugging Face download and checks the pipeline mechanics on CPU:
+
+```bash
+abliteration validate --config examples/toy_dense.json
+abliteration init --config examples/toy_dense.json --run runs/toy-check
+abliteration run --run runs/toy-check
+abliteration report --run runs/toy-check
+```
+
+Toy-model behavior is not evidence about Qwen.
 
 ## Bring your own behavior and model
 

@@ -1,38 +1,40 @@
 # Quick start
 
-1. Clone the repository and use your CUDA-enabled PyTorch environment.
+The [README quick start](README.md#quick-start) gives the full setup, config, model access, and output walkthrough. This page is a short command checklist for the included Qwen verbosity example.
 
-```bash
-git clone https://github.com/Bhanunamikaze/Abliteration-Workbench.git
-cd Abliteration-Workbench
-python -m pip install -e '.[hf,plots,test]'
-abliteration doctor
-```
+1. Clone the repo and make a virtual environment with Python 3.10+:
 
-2. Start a new calibrated Qwen verbosity experiment:
+   ```bash
+   git clone https://github.com/Bhanunamikaze/Abliteration-Workbench.git
+   cd Abliteration-Workbench
+   python3 -m venv .venv
+   source .venv/bin/activate
+   python3 -m pip install --upgrade pip
+   ```
 
-```bash
-abliteration init --config examples/verbosity.json --run runs/qwen-style
-abliteration run --run runs/qwen-style
-```
+2. For a GPU run, install CUDA-enabled PyTorch using the [official selector](https://pytorch.org/get-started/locally/). Then install the workbench:
 
-3. Inspect the planner and local report:
+   ```bash
+   python3 -m pip install -e '.[hf,plots]'
+   abliteration doctor
+   ```
 
-```bash
-abliteration plan --run runs/qwen-style
-abliteration report --run runs/qwen-style
-```
+   The Qwen example requires `cuda_available: true`. The [Qwen model](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) is public and downloads automatically when the model first loads. For a gated/private model, obtain access and run `hf auth login`; check it with `hf auth whoami`. A small public download check is `hf download Qwen/Qwen2.5-1.5B-Instruct config.json`.
 
-Open `runs/qwen-style/stages/12_report/report.html` in your browser. A result of `needs_review` or `needs_data` is a valid experimental outcome, not a software failure.
+3. Inspect [`examples/verbosity.json`](examples/verbosity.json) and its paired [`verbosity.jsonl`](examples/verbosity.jsonl). `model.id` is the Hugging Face model ID or local checkpoint path; `dataset` is relative to the config file. `--run` names the output directory. Then execute:
 
-4. Reuse your historical numeric results without loading the model:
+   ```bash
+   abliteration validate --config examples/verbosity.json
+   abliteration init --config examples/verbosity.json --run runs/qwen-style
+   abliteration plan --run runs/qwen-style
+   abliteration run --run runs/qwen-style
+   abliteration status --run runs/qwen-style
+   abliteration report --run runs/qwen-style
+   abliteration plot --run runs/qwen-style
+   ```
 
-```bash
-abliteration import-legacy --source /home/stark/Projects/Abliteration --out runs/legacy-review
-```
+   Open `runs/qwen-style/stages/12_report/report.html` and `runs/qwen-style/plots/`. An automatic run can finish with `needs_review` or `needs_data`; a passing hook is not guaranteed. Stop with Ctrl+C and repeat the same `run` command to resume.
 
-5. Stop with Ctrl+C and resume by repeating the same run command. Change the configuration through `abliteration fork`, not by editing a run snapshot.
+To try another model, pass `--set 'model.id="ORG/MODEL"'` to **both** `validate` and `init`, using a new run directory. `run` reads that saved configuration. See the [model support matrix](docs/MODELS.md), [data format](docs/DATA.md), and [CLI reference](docs/CLI.md).
 
-The [README](README.md) summarizes the workbench and results. The [full usage guide](https://github.com/Bhanunamikaze/Abliteration-Workbench/wiki/Usage-Guide) covers the workflow; model support and non-support are listed in [docs/MODELS.md](docs/MODELS.md), task data in [docs/DATA.md](docs/DATA.md), and commands in [docs/CLI.md](docs/CLI.md).
-
-**Validation:** see [validation/VALIDATION.md](validation/VALIDATION.md). Core dense/MoE fixture tests ran on CPU; full HF model inference and RTX 3060 performance were not tested in the build environment.
+For a CPU-only pipeline check, use `examples/toy_dense.json` and `runs/toy-check` in place of the Qwen config and run directory. The toy model needs no Hugging Face download. The full [wiki usage guide](https://github.com/Bhanunamikaze/Abliteration-Workbench/wiki/Usage-Guide) covers custom datasets, controlled interventions, reports, and bundles.

@@ -15,17 +15,26 @@ The software estimates activation directions from paired examples. It does **not
 
 Use Python 3.10+ with CUDA-enabled PyTorch if you want to run the example Qwen model on a GPU. The repository does not include model weights. Respect the model provider's access and license conditions.
 
-For the local `alter` environment used in the recorded runs:
+Create a project virtual environment. For NVIDIA GPUs, install a CUDA-enabled PyTorch build chosen with the [official PyTorch selector](https://pytorch.org/get-started/locally/) before installing the workbench:
 
 ```bash
-conda activate alter
 git clone https://github.com/Bhanunamikaze/Abliteration-Workbench.git
 cd Abliteration-Workbench
-python3 -m pip install -e '.[hf,plots,test]'
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+```
+
+After installing the appropriate PyTorch build:
+
+```bash
+python3 -m pip install -e '.[hf,plots]'
 abliteration doctor
 ```
 
-Check that `doctor` reports `cuda_available: true` and enough free VRAM. The default Qwen example uses BF16 and CUDA. On a machine without CUDA, use the toy example for software checks:
+Check that `doctor` reports `cuda_available: true` and sufficient **total** GPU memory for the model and experiment. The default Qwen example uses BF16 and CUDA. Its [public model repository](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) needs no account for download. For a gated or private model, obtain access and use [`hf auth login`](https://huggingface.co/docs/huggingface_hub/en/guides/cli#hf-auth-login), then `hf auth whoami`. To check public Hub connectivity without downloading weights, run `hf download Qwen/Qwen2.5-1.5B-Instruct config.json`. Model files are fetched when a stage first loads the model; `validate` and `init` do not load it.
+
+On a machine without CUDA, use the toy example for software checks:
 
 ```bash
 abliteration validate --config examples/toy_dense.json
@@ -37,7 +46,7 @@ abliteration run --run runs/toy-check
 
 ## 2. Run a calibrated Qwen experiment
 
-Validate the data, create a run snapshot, inspect the proposed next stage, then execute the automatic route:
+The included [`verbosity.json`](../examples/verbosity.json) names the model in `model.id` and a paired [`verbosity.jsonl`](../examples/verbosity.jsonl) dataset in `dataset`. Dataset paths are resolved relative to the config file. The example has 16 train, 8 validation, 8 test, and 4 control records. Validate the data, create a run snapshot, inspect the proposed next stage, then execute the automatic route:
 
 ```bash
 abliteration validate --config examples/verbosity.json
@@ -49,6 +58,17 @@ abliteration report --run runs/qwen-verbosity
 ```
 
 The report is under `runs/qwen-verbosity/stages/12_report/`. Each run keeps its resolved configuration, input snapshot, stage outputs, generation cache, and decisions in its own directory. A run may finish with `needs_data` or `needs_review`; that is an experimental result, not a fabricated winner.
+
+To select another Hugging Face model or local checkpoint, set `model.id` in a copy of the config or override it in both commands that read the config:
+
+```bash
+abliteration validate --config examples/verbosity.json --set 'model.id="ORG/MODEL"'
+abliteration init --config examples/verbosity.json --run runs/my-model \
+  --set 'model.id="ORG/MODEL"'
+abliteration run --run runs/my-model
+```
+
+`run` uses the initialized snapshot and takes no model-selection flag. Select `model.device` and `model.dtype` for the target hardware; if BF16 is unsupported, pass `--set 'model.dtype="fp16"' to both `validate` and `init`. Use a new run or `fork` when changing model or dataset inputs.
 
 To run one stage and its prerequisites:
 
