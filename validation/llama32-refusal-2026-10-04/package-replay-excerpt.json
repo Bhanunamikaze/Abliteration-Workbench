@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "kind": "activation_runtime_bundle",
+  "weights_modified": false,
+  "source_model_id": "meta-llama/Llama-3.2-3B-Instruct",
+  "source_snapshot_commit": "0cb88a4f764b7a12671c53f0838cd831a0843b95",
+  "directions_fingerprint": "633ac48d7d1e0aed9ca9d760522644be21634f10c9c69a76d57288c530f06f0a",
+  "intervention": {
+    "control_seed": null,
+    "layers": [
+      0,
+      1,
+      18
+    ],
+    "operation": "ablate",
+    "phase": "both",
+    "reference": "negative",
+    "scope": "last",
+    "site": "residual",
+    "strength": 1.0
+  },
+  "replication": {
+    "dataset_hash": "94fb302be18b36ce9f39fbb5f47b8499963214c0bbaf21931c2dedd53e3889d8",
+    "generation_cap": 1024,
+    "status": "validated_replication",
+    "summary_hash": "87f7649b362730e85838292459e0ee262fa280e137df5ad4d874d0966207096d"
+  },
+  "package_validation": {
+    "exact_token_matches": 292,
+    "replayed_control_prompts": 100,
+    "replayed_test_prompts": 192
+  },
+  "source_bundle_manifest_sha256": "e52b3e0bc3ee83e2a1f957ca024406ba87a16ac2b223c6fd67639398ede0418f",
+  "note": "Excerpt from the existing manifest. This publication pass did not rerun the model."
+}

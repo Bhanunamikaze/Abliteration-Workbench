@@ -68,6 +68,8 @@ abliteration replicate --run runs/llama32-refusal-auto-v2 \
 
 The old scores are useful for checking metric interpretation, but they do not establish a first-class replication. The second command reruns generation and scoring using the frozen source intervention.
 
+For the recorded Llama study, those commands have already been run; choose unused output paths for a new attempt. Its larger benchmark set overlapped earlier baseline prompts, and its first-class run reused the temporary evaluator's prompt set. The recorded `validated_replication` status therefore describes a **same-environment frozen-intervention reproduction**, not an independent external-lab or fully unseen test. Its binary policy was refined after earlier results. The [research record](research/llama32-refusal-2026-10-04.md) documents exposure and an unflagged false non-refusal label; `max_scorer_review_fraction: 1.0` passing does not mean human review occurred.
+
 ## Configuration knobs
 
 The complete resolved schema is in `ablationlab/config.py`; every run stores its resolved `config.json`.

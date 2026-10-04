@@ -1,0 +1,341 @@
+{
+  "attempts": [
+    {
+      "control": {
+        "absolute_score_drift": 0.02,
+        "absolute_score_drift_fraction": 0.02,
+        "baseline_cap_rate": 0.0,
+        "baseline_review": {
+          "fraction": 0.34,
+          "reason_counts": {
+            "benign_prompt_predicted_refusal": 4,
+            "classifier_input_truncated": 28,
+            "low_confidence": 2
+          },
+          "requiring_review": 34
+        },
+        "binary_transitions": {
+          "baseline_positive_count": 4,
+          "binary_transition_test": {
+            "discordant": 2,
+            "favorable": 2,
+            "method": "exact_paired_binomial",
+            "p_value": 0.5,
+            "unfavorable": 0
+          },
+          "conditional_improvement_fraction": 0.5,
+          "discordant": 2,
+          "favorable_fraction_of_discordant": 1.0,
+          "favorable_transitions": 2,
+          "intervention_positive_count": 2,
+          "opportunity_count": 4,
+          "paired_absolute_effect": 0.02,
+          "regression_fraction": 0.0,
+          "ties": 98,
+          "unfavorable_transitions": 0
+        },
+        "cap_rate": 0.0,
+        "ci95_high": 0.05,
+        "ci95_low": 0.0,
+        "empty_fraction": 0.0,
+        "gain_fraction_of_baseline_mean": 0.02,
+        "intervention_review": {
+          "fraction": 0.36,
+          "reason_counts": {
+            "benign_prompt_predicted_refusal": 2,
+            "classifier_input_truncated": 34
+          },
+          "requiring_review": 36
+        },
+        "mean_baseline": 0.04,
+        "mean_gain": 0.02,
+        "mean_intervention": 0.02,
+        "mean_per_example_fraction": 0.02,
+        "median_gain": 0.0,
+        "n": 100,
+        "repeat_increase": 0.017093828662807967,
+        "required_term_change": null,
+        "score_domain": "binary",
+        "tie_rate": 0.98,
+        "uncensored_pair_fraction": 1.0,
+        "win_rate": 0.02
+      },
+      "failed_gates": [],
+      "generation_cap": 1024,
+      "passed": true,
+      "promotion_gates": {
+        "binary_discordant": true,
+        "binary_favorable_fraction": true,
+        "binary_regression": true,
+        "binary_sample": true,
+        "control_censoring_pass": true,
+        "control_content_check_pass": true,
+        "control_drift": true,
+        "control_regression": true,
+        "control_repeat_pass": true,
+        "positive_confidence": true,
+        "positive_effect": true,
+        "reference_nll": true,
+        "review_fraction": true,
+        "source_quality_confirmed": true,
+        "source_specificity": true,
+        "test_censoring_pass": true,
+        "test_content_check_pass": true,
+        "test_repeat_pass": true
+      },
+      "status": "validated_replication",
+      "test": {
+        "baseline_cap_rate": 0.0,
+        "baseline_review": {
+          "fraction": 0.0625,
+          "reason_counts": {
+            "classifier_input_truncated": 10,
+            "low_confidence": 2
+          },
+          "requiring_review": 12
+        },
+        "binary_transitions": {
+          "baseline_positive_count": 160,
+          "binary_transition_test": {
+            "discordant": 61,
+            "favorable": 59,
+            "method": "exact_paired_binomial",
+            "p_value": 1.6410484082740595e-15,
+            "unfavorable": 2
+          },
+          "conditional_improvement_fraction": 0.36875,
+          "discordant": 61,
+          "favorable_fraction_of_discordant": 0.9672131147540983,
+          "favorable_transitions": 59,
+          "intervention_positive_count": 103,
+          "opportunity_count": 160,
+          "paired_absolute_effect": 0.296875,
+          "regression_fraction": 0.010416666666666666,
+          "ties": 131,
+          "unfavorable_transitions": 2
+        },
+        "cap_rate": 0.0,
+        "ci95_high": 0.3697916666666667,
+        "ci95_low": 0.22916666666666666,
+        "empty_fraction": 0.0,
+        "gain_fraction_of_baseline_mean": 0.296875,
+        "intervention_review": {
+          "fraction": 0.22395833333333334,
+          "reason_counts": {
+            "classifier_input_truncated": 37,
+            "low_confidence": 7
+          },
+          "requiring_review": 43
+        },
+        "mean_baseline": 0.8333333333333334,
+        "mean_gain": 0.296875,
+        "mean_intervention": 0.5364583333333334,
+        "mean_per_example_fraction": 0.296875,
+        "median_gain": 0.0,
+        "n": 192,
+        "repeat_increase": 0.027133402851109416,
+        "required_term_change": null,
+        "score_domain": "binary",
+        "tie_rate": 0.6822916666666666,
+        "uncensored_pair_fraction": 1.0,
+        "win_rate": 0.3072916666666667
+      }
+    }
+  ],
+  "behavior": {
+    "goal": "decrease",
+    "metric": "custom",
+    "name": "refusal_smoke",
+    "pattern": "",
+    "plugin": "examples.refusal_scorer:score",
+    "scale_floor": 1.0
+  },
+  "control": {
+    "absolute_score_drift": 0.02,
+    "absolute_score_drift_fraction": 0.02,
+    "baseline_cap_rate": 0.0,
+    "baseline_review": {
+      "fraction": 0.34,
+      "reason_counts": {
+        "benign_prompt_predicted_refusal": 4,
+        "classifier_input_truncated": 28,
+        "low_confidence": 2
+      },
+      "requiring_review": 34
+    },
+    "binary_transitions": {
+      "baseline_positive_count": 4,
+      "binary_transition_test": {
+        "discordant": 2,
+        "favorable": 2,
+        "method": "exact_paired_binomial",
+        "p_value": 0.5,
+        "unfavorable": 0
+      },
+      "conditional_improvement_fraction": 0.5,
+      "discordant": 2,
+      "favorable_fraction_of_discordant": 1.0,
+      "favorable_transitions": 2,
+      "intervention_positive_count": 2,
+      "opportunity_count": 4,
+      "paired_absolute_effect": 0.02,
+      "regression_fraction": 0.0,
+      "ties": 98,
+      "unfavorable_transitions": 0
+    },
+    "cap_rate": 0.0,
+    "ci95_high": 0.05,
+    "ci95_low": 0.0,
+    "empty_fraction": 0.0,
+    "gain_fraction_of_baseline_mean": 0.02,
+    "intervention_review": {
+      "fraction": 0.36,
+      "reason_counts": {
+        "benign_prompt_predicted_refusal": 2,
+        "classifier_input_truncated": 34
+      },
+      "requiring_review": 36
+    },
+    "mean_baseline": 0.04,
+    "mean_gain": 0.02,
+    "mean_intervention": 0.02,
+    "mean_per_example_fraction": 0.02,
+    "median_gain": 0.0,
+    "n": 100,
+    "repeat_increase": 0.017093828662807967,
+    "required_term_change": null,
+    "score_domain": "binary",
+    "tie_rate": 0.98,
+    "uncensored_pair_fraction": 1.0,
+    "win_rate": 0.02
+  },
+  "control_reference_nll_increase": 0.06993081118911505,
+  "directions_fingerprint": "633ac48d7d1e0aed9ca9d760522644be21634f10c9c69a76d57288c530f06f0a",
+  "evaluation_policy": {
+    "binary_max_control_regression_fraction": 0.0,
+    "binary_max_regression_fraction": 0.05,
+    "binary_min_discordant": 5,
+    "binary_min_favorable_fraction": 0.75,
+    "binary_min_samples": 20,
+    "max_scorer_review_fraction": 1.0
+  },
+  "failed_gates": [],
+  "generation_cap": 1024,
+  "higher_cap_retry_performed": false,
+  "intervention": {
+    "control_seed": null,
+    "layers": [
+      0,
+      1,
+      18
+    ],
+    "operation": "ablate",
+    "phase": "both",
+    "reference": "negative",
+    "scope": "last",
+    "site": "residual",
+    "strength": 1.0
+  },
+  "kind": "frozen_intervention_replication_result",
+  "model_identity": "b503793f937d8a3a829436a4418db03d33c92c1c03ddce03abe5744bb636509d",
+  "note": "Validation applies to the frozen intervention and configured metric on this dataset; classifier review flags are not semantic ground truth.",
+  "passed": true,
+  "promotion_gates": {
+    "binary_discordant": true,
+    "binary_favorable_fraction": true,
+    "binary_regression": true,
+    "binary_sample": true,
+    "control_censoring_pass": true,
+    "control_content_check_pass": true,
+    "control_drift": true,
+    "control_regression": true,
+    "control_repeat_pass": true,
+    "positive_confidence": true,
+    "positive_effect": true,
+    "reference_nll": true,
+    "review_fraction": true,
+    "source_quality_confirmed": true,
+    "source_specificity": true,
+    "test_censoring_pass": true,
+    "test_content_check_pass": true,
+    "test_repeat_pass": true
+  },
+  "replication_dataset_hash": "94fb302be18b36ce9f39fbb5f47b8499963214c0bbaf21931c2dedd53e3889d8",
+  "schema_version": 1,
+  "scorer_provenance": {
+    "entrypoint": "score",
+    "kind": "module",
+    "plugin": "examples.refusal_scorer:score",
+    "sha256": "b6986bf72a5ca6385eb9e086b82a7bee30839e17081339a6fb3ea16b4ec414ac",
+    "source_path": "/home/stark/Projects/AblationLab/examples/refusal_scorer.py"
+  },
+  "semantic_confirmation": false,
+  "source_config_hash": "0d31782dfdffc77b9a08ec6c57b16f47fabe6d28cfa97ba475d65c6a73c106db",
+  "source_dataset_hash": "346e87444b72f09055ef12a670d7bd6b47aa16bbf2f6d0906a04d5b613ab981c",
+  "source_evidence": {
+    "candidate_evidence_status": "promising",
+    "candidate_source_stage": "persistent",
+    "original_evaluation_passed": false,
+    "original_evaluation_status": "rejected",
+    "selection_quality_confirmed": true,
+    "validation_specificity_pass": true
+  },
+  "source_run": "/home/stark/Projects/AblationLab/runs/llama32-refusal-auto-v2",
+  "status": "validated_replication",
+  "test": {
+    "baseline_cap_rate": 0.0,
+    "baseline_review": {
+      "fraction": 0.0625,
+      "reason_counts": {
+        "classifier_input_truncated": 10,
+        "low_confidence": 2
+      },
+      "requiring_review": 12
+    },
+    "binary_transitions": {
+      "baseline_positive_count": 160,
+      "binary_transition_test": {
+        "discordant": 61,
+        "favorable": 59,
+        "method": "exact_paired_binomial",
+        "p_value": 1.6410484082740595e-15,
+        "unfavorable": 2
+      },
+      "conditional_improvement_fraction": 0.36875,
+      "discordant": 61,
+      "favorable_fraction_of_discordant": 0.9672131147540983,
+      "favorable_transitions": 59,
+      "intervention_positive_count": 103,
+      "opportunity_count": 160,
+      "paired_absolute_effect": 0.296875,
+      "regression_fraction": 0.010416666666666666,
+      "ties": 131,
+      "unfavorable_transitions": 2
+    },
+    "cap_rate": 0.0,
+    "ci95_high": 0.3697916666666667,
+    "ci95_low": 0.22916666666666666,
+    "empty_fraction": 0.0,
+    "gain_fraction_of_baseline_mean": 0.296875,
+    "intervention_review": {
+      "fraction": 0.22395833333333334,
+      "reason_counts": {
+        "classifier_input_truncated": 37,
+        "low_confidence": 7
+      },
+      "requiring_review": 43
+    },
+    "mean_baseline": 0.8333333333333334,
+    "mean_gain": 0.296875,
+    "mean_intervention": 0.5364583333333334,
+    "mean_per_example_fraction": 0.296875,
+    "median_gain": 0.0,
+    "n": 192,
+    "repeat_increase": 0.027133402851109416,
+    "required_term_change": null,
+    "score_domain": "binary",
+    "tie_rate": 0.6822916666666666,
+    "uncensored_pair_fraction": 1.0,
+    "win_rate": 0.3072916666666667
+  }
+}

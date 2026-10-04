@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "kind": "research_stage_extract",
+  "note": "Selected fields copied from local stage records; this is a derived publication extract, not a new run or complete response archive.",
+  "pilot": {
+    "dataset_counts": {
+      "control": 8,
+      "test": 8,
+      "train": 8,
+      "validation": 4
+    },
+    "baseline_score": 0.25,
+    "positive_minus_negative_score": 0.75,
+    "l18_additive_sweep_effect": 0.25,
+    "l18_additive_sweep_win_rate": 0.25,
+    "zero_reference_l18_validation_baseline": 0.75,
+    "zero_reference_l18_validation_intervention": 0.75,
+    "zero_reference_l18_observed_coordinate_mean_abs_ratio": 0.00021744585364767948,
+    "writer_ablation_stage_status": "complete",
+    "writer_ablation_candidates_tested": 0
+  },
+  "bounded_confirmation": {
+    "intervention": {
+      "control_seed": null,
+      "layers": [
+        0,
+        1,
+        18
+      ],
+      "operation": "ablate",
+      "phase": "both",
+      "reference": "negative",
+      "scope": "last",
+      "site": "residual",
+      "strength": 1.0
+    },
+    "initial_status": "promising_censored",
+    "initial_generation_cap": 128,
+    "initial_intervention_cap_rate": 1.0,
+    "final_generation_cap": 1024,
+    "final_intervention_cap_rate": 0.0,
+    "final_status": "promising"
+  },
+  "original_eight_prompt_evaluation": {
+    "selected_intervention": {
+      "control_seed": null,
+      "layers": [
+        0,
+        1,
+        18
+      ],
+      "operation": "ablate",
+      "phase": "both",
+      "reference": "negative",
+      "scope": "last",
+      "site": "residual",
+      "strength": 1.0
+    },
+    "n": 8,
+    "baseline_mean": 0.625,
+    "intervention_mean": 0.375,
+    "win_rate": 0.25,
+    "evaluation_status": "rejected",
+    "passed": false
+  },
+  "source_file_sha256": {
+    "runs/llama32-refusal-smoke/dataset_audit.json": "41c608918b374b8be98a13e3c8342d43835bfe72a89519cc26e4e5a91eeb8c2d",
+    "runs/llama32-refusal-smoke/stages/02_baseline/result.json": "ccb929a4773bdcfd89c9efdb3d462ff6b21fc156fca7dff99fbeb44525caf187",
+    "runs/llama32-refusal-smoke/stages/05_sweep/result.json": "316a91598374a6a375bdd7bdb9ec150796e40ff7ab5ad8f6095df3dc3746659a",
+    "runs/llama32-refusal-smoke/stages/08_ablate/result.json": "d81a391175552f6f8724e9fa4ee66ce20d85086129ee246750413606d9e135c4",
+    "runs/llama32-refusal-smoke/stages/09_trace/result.json": "aa5e3c3dbd2fd48a2b1cb83ae96eed702163709cf322ab2e2de7d3e59bf8ba97",
+    "runs/llama32-refusal-smoke/stages/09_trace/projection_summary.csv": "ca12488089b10941745576c3a44cc6b0a624adf30198f275bceb47ad7e7466d2",
+    "runs/llama32-refusal-auto-v2/stages/10_persistent/result.json": "3f9fab10950fc0e2e0d48d489337221ab6bab48fec0f8502000182c70b448d1c",
+    "runs/llama32-refusal-auto-v2/stages/11_evaluate/result.json": "4046f4a6c13f45709767942a8de915dce7a873d44dc7a5ab58be15bc2c95493e"
+  }
+}
