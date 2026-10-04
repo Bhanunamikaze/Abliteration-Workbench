@@ -61,7 +61,10 @@ class Engine:
             if all(k in self.store.cache for k in keys):
                 responses=[self.store.cache[k] for k in keys]
             else:
-                self.store.check_budget(len(chunk))
+                # A crash can leave a partially written batch in the journal.
+                # Only uncached jobs consume the unique-generation budget when
+                # the whole batch must be replayed for identical padding.
+                self.store.check_budget(sum(k not in self.store.cache for k in keys))
                 responses=self._generate_retry(chunk,bundle,spec,signature["max_new_tokens"])
                 for r,response,key in zip(chunk,responses,keys):
                     response.update(job_key=key,id=r["id"],split=r["split"],messages=r["neutral"],

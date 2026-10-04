@@ -31,7 +31,12 @@ DEFAULTS = {
                "persistent_cluster_gap": 2, "max_cap_confirmations": 1,
                "overrides": {}},
     "evaluation": {"reference_tokens": 32, "max_reference_nll_increase": 2.0,
-                   "baseline_include_test": False},
+                   "baseline_include_test": False,
+                   "binary_min_samples": 20, "binary_min_discordant": 5,
+                   "binary_min_favorable_fraction": 0.75,
+                   "binary_max_regression_fraction": 0.05,
+                   "binary_max_control_regression_fraction": 0.0,
+                   "max_scorer_review_fraction": 1.0},
     "trace": {"prefix_tokens": [0, 8], "denominator_floor": 0.1},
     "budget": {"max_generations": 1600, "max_seconds": 14400},
 }
@@ -222,6 +227,15 @@ def validate_config(c: dict) -> None:
     number(c["trace"]["denominator_floor"], "trace.denominator_floor", strictly_positive=True)
     number(c["evaluation"]["max_reference_nll_increase"], "evaluation.max_reference_nll_increase")
     integer(c["evaluation"]["reference_tokens"], "evaluation.reference_tokens", 0)
+    for key, default in (("binary_min_samples",20),("binary_min_discordant",5)):
+        integer(c["evaluation"].get(key,default),"evaluation."+key,1)
+    for key, default in (("binary_min_favorable_fraction",.75),
+                         ("binary_max_regression_fraction",.05),
+                         ("binary_max_control_regression_fraction",0.0),
+                         ("max_scorer_review_fraction",1.0)):
+        value=c["evaluation"].get(key,default)
+        number(value,"evaluation."+key)
+        if value>1:raise LabError(f"evaluation.{key} must be in [0,1]")
     integer(c["budget"]["max_generations"], "budget.max_generations", 1)
     number(c["budget"]["max_seconds"], "budget.max_seconds", strictly_positive=True)
     for label, values in [("search.strengths", s["strengths"]), ("search.ablations", s["ablations"])]:

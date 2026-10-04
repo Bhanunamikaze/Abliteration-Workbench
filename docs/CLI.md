@@ -27,11 +27,46 @@ Use `abliteration --help` or `abliteration COMMAND --help`. The original `ablab`
 | `export-plan --run DIR --out FILE` | Draft eligible writer-projection plan; may contain zero edits | No |
 | `export --run DIR --plan FILE --out DIR` | Apply projection to a copied floating checkpoint | Yes |
 | `bundle --run DIR --out DIR` | Package a passing runtime intervention, unchanged model files, directions, and runner; replay held-out outputs | Yes |
+| `replication-dataset --outputs DIR --out FILE` | Recover prompts only from historical baseline/intervention outputs | No |
+| `replicate --run SOURCE --dataset FILE --out DIR` | Resume or create a frozen intervention replication | Yes |
+| `replication-status --run DIR` | Verify and display replication state and result | No |
+| `replication-report --run DIR` | Verify and print the completed replication report path | No |
+| `recipe --replication DIR --out FILE` | Save a recipe authorized by a passing replication | No |
+| `bundle --replication DIR --out DIR` | Package and replay a passing replication | Yes |
 | `evaluate-checkpoint --run DIR --model ID_OR_PATH --out DIR` | Fresh original/candidate held-out and control responses | One model at a time |
 | `compare RUN1 RUN2` | Display two runs' stored evaluation summaries | No |
 | `unlock --run DIR` | Remove stale run lock only after its process has exited | No |
 
 Options shown without `--run` in abbreviated rows still need `--run DIR`.
+
+## Frozen-intervention replication
+
+`replicate` starts from the source run's completed `evaluate.selected_intervention`. It copies and fingerprints the existing direction bundle, snapshots a new test/control-only dataset, and records the source config and dataset hashes, model identity, scorer provenance, source evaluation hash, generation settings, and tool version. It does not invoke capture, direction estimation, layer search, or other discovery stages. The new prompts must not duplicate source prompts or each other. Rerunning the same command resumes from the content-addressed generation cache; a changed dataset or source is rejected.
+
+```bash
+abliteration replicate --run runs/discovery \
+  --dataset fresh-test-control.json --out runs/external-replication
+abliteration replication-status --run runs/external-replication
+abliteration replication-report --run runs/external-replication
+```
+
+The initial ceiling is the source evaluation ceiling. If a promising effect fails the unchanged `search.max_cap_rate` gate, replication saves the initial outputs and summary under `attempts/initial/`, then automatically retries matched baseline and intervention arms at the larger of twice the ceiling or `generation.confirm_max_new_tokens`. Use `--retry-max-new-tokens N` at creation to set a different higher ceiling when the model context requires it. Both attempts retain their own cap rates; only the final attempt can pass. `--max-generations` and `--max-seconds` set immutable budgets at creation; the generation budget must cover both arms and one retry. Interruptions preserve finished batches. A retry that still caps remains `promising_censored` and cannot promote.
+
+Binary observed scores use favorable/unfavorable paired transitions, a bootstrap paired-gain interval, and an exact two-sided paired binomial p-value. Promotion requires positive effect and CI, sufficient samples and discordant pairs, favorable fraction, low test and control regression, control drift, cap and repetition/content quality, source specificity and quality confirmation, and acceptable reference NLL when enabled. Binary promotion does not use the fraction of all examples that changed. Continuous scores retain the existing paired win-rate gate. The source config sets `evaluation.binary_min_samples`, `binary_min_discordant`, `binary_min_favorable_fraction`, `binary_max_regression_fraction`, `binary_max_control_regression_fraction`, and `max_scorer_review_fraction` before replication is created.
+
+`summary.json` contains provenance, `test` and `control` paired statistics and review counts, `attempts`, `promotion_gates`, `failed_gates`, `status`, and `passed`. Four JSON output files, `results.csv`, `manual_review.csv`, fixed-reference NLL, and Markdown/HTML reports preserve the review trail. Review flags do not turn classifier scores into confirmed semantic labels. A passing result may authorize `recipe --replication` or `bundle --replication`; bundle creation replays the saved intervention outputs at the final ceiling. The source run and its `evaluate/result.json` remain unchanged.
+
+For older external files with `test_baseline.json`, `test_intervention.json`, `control_baseline.json`, and `control_intervention.json`, recover only their prompts and labels:
+
+```bash
+abliteration replication-dataset --outputs runs/llama32-refusal-replication-targeted \
+  --out runs/llama32-refusal-replication-prompts.json
+abliteration replicate --run runs/llama32-refusal-auto-v2 \
+  --dataset runs/llama32-refusal-replication-prompts.json \
+  --out runs/llama32-refusal-replication
+```
+
+The old scores are useful for checking metric interpretation, but they do not establish a first-class replication. The second command reruns generation and scoring using the frozen source intervention.
 
 ## Configuration knobs
 

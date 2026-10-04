@@ -16,6 +16,7 @@
 | **Automate and resume** | Choose conservative `strict` routing or bounded `explore` routing with writer, residual, trace, and persistent diagnostics. Stop and resume from cached generation batches; fork a run to change configuration without overwriting its evidence. |
 | **See the evidence** | Get stage artifacts, CSV/JSON measurements, local HTML/Markdown reports, and plots. The report records why the planner continued, stopped, or requested review. |
 | **Deploy a validated hook** | Package unchanged model files, direction tensors, a runtime runner, and an integrity manifest. The bundle command requires a passing held-out result and exact replay of saved outputs. |
+| **Replicate a frozen intervention** | Evaluate the selected direction and hook on a new test/control dataset without repeating discovery. Separate immutable provenance, paired binary evidence, scorer review flags, and a higher-cap retry govern promotion. |
 | **Explore weight edits explicitly** | Draft an export plan and project supported floating writer weights into a copied checkpoint, followed by an equivalence check. A runtime hook and a static weight edit have different semantics. |
 | **Reuse existing work** | Audit the original 05–09 experiment artifacts and import actual legacy direction vectors with provenance warnings. Compare runs and benchmark throughput on your own hardware. |
 
@@ -70,6 +71,19 @@ Every run stores the resolved configuration, input snapshot, stage decisions, ge
 | Reuse old data or measure local throughput | `import-legacy`, `import-directions`, `benchmark` |
 
 See the [complete command reference](docs/CLI.md) for options and prerequisites. The automatic planner has bounded budgets and records its reason for moving to each stage.
+
+### Replicate a selected intervention
+
+```bash
+abliteration replicate --run runs/discovery --dataset fresh-test-control.json \
+  --out runs/external-replication
+abliteration replication-status --run runs/external-replication
+abliteration replication-report --run runs/external-replication
+abliteration recipe --replication runs/external-replication --out recipe.json
+abliteration bundle --replication runs/external-replication --out checkpoints/runtime
+```
+
+The replication dataset needs only `test` and `control` rows. The source `evaluate` stage supplies the exact intervention; its direction, model identity, scorer source, and generation settings are frozen. A strong capped result is saved as `promising_censored` and automatically rerun with a higher ceiling. The original cap-rate gate still applies to the final result. Only a passing replication can authorize a recipe or bundle, and packaging replays the replication outputs. See [replication details](docs/CLI.md#frozen-intervention-replication).
 
 ## Measured Qwen result
 

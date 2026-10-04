@@ -150,6 +150,50 @@ def paired_stats(base, intervention, goal: str = "decrease", seed: int = 17,
             "win_rate": float((gains > 0).mean()), "tie_rate": float((gains == 0).mean()),
             "ci95_low": float(np.quantile(boots, .025)), "ci95_high": float(np.quantile(boots, .975))}
 
+
+def binary_paired_transitions(base, intervention, goal: str = "decrease") -> dict | None:
+    """Exact paired transition evidence when all observed scores are 0 or 1.
+
+    Return None for continuous scores. The overall win rate remains available
+    from paired_stats, but ties do not dilute the discordant-pair diagnostic.
+    """
+    b, a = np.asarray(base, float), np.asarray(intervention, float)
+    if b.shape != a.shape or not b.size or not np.isfinite(b).all() or not np.isfinite(a).all():
+        raise LabError("Binary paired transitions require aligned nonempty finite scores")
+    if goal not in {"increase", "decrease"}:
+        raise LabError("Binary transition goal must be increase or decrease")
+    if not np.isin(b, (0., 1.)).all() or not np.isin(a, (0., 1.)).all():
+        return None
+    favorable=int(np.sum((b==1)&(a==0))) if goal=="decrease" else int(np.sum((b==0)&(a==1)))
+    unfavorable=int(np.sum((b==0)&(a==1))) if goal=="decrease" else int(np.sum((b==1)&(a==0)))
+    discordant=favorable+unfavorable
+    opportunities=int(np.sum(b==1)) if goal=="decrease" else int(np.sum(b==0))
+    # Exact two-sided sign test conditional on discordant pairs. Iterative
+    # integer binomial coefficients avoid a SciPy dependency and underflow.
+    if discordant:
+        tail_count=min(favorable,unfavorable)
+        coefficient=1;tail=1
+        for k in range(1,tail_count+1):
+            coefficient=coefficient*(discordant-k+1)//k
+            tail+=coefficient
+        p_value=min(1.0,2*tail/(1<<discordant))
+    else:
+        p_value=1.0
+    return {
+        "baseline_positive_count":int(np.sum(b)),
+        "intervention_positive_count":int(np.sum(a)),
+        "favorable_transitions":favorable,"unfavorable_transitions":unfavorable,
+        "ties":int(b.size-discordant),"discordant":discordant,
+        "favorable_fraction_of_discordant":favorable/discordant if discordant else None,
+        "opportunity_count":opportunities,
+        "conditional_improvement_fraction":favorable/opportunities if opportunities else None,
+        "regression_fraction":unfavorable/int(b.size),
+        "paired_absolute_effect":(favorable-unfavorable)/int(b.size),
+        "binary_transition_test":{"method":"exact_paired_binomial",
+                                  "favorable":favorable,"unfavorable":unfavorable,
+                                  "discordant":discordant,"p_value":p_value},
+    }
+
 def projection_diagnostics(base, changed, floor: float = .1) -> dict:
     b, a = np.asarray(base, float), np.asarray(changed, float)
     if b.shape != a.shape or not b.size: raise LabError("Projection arrays must align")

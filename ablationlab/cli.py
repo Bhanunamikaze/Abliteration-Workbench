@@ -44,12 +44,22 @@ def parser():
     ex=sub.add_parser("export",help="Explicit copied-checkpoint projection and fixed-input equivalence check")
     ex.add_argument("--run",required=True);ex.add_argument("--plan",required=True);ex.add_argument("--out",required=True)
     bundled=sub.add_parser("bundle",help="Package a passing runtime intervention with unchanged model weights and a local runner")
-    bundled.add_argument("--run",required=True);bundled.add_argument("--out",required=True)
+    bundled.add_argument("--run");bundled.add_argument("--replication");bundled.add_argument("--out",required=True)
     gen=sub.add_parser("generate",help="Generate with a saved runtime recipe, without changing weights")
     gen.add_argument("--run",required=True);gen.add_argument("--prompt",required=True);gen.add_argument("--recipe")
     gen.add_argument("--out",default=None)
     recipe=sub.add_parser("recipe",help="Save the held-out-tested runtime intervention as JSON")
-    recipe.add_argument("--run",required=True);recipe.add_argument("--out",required=True)
+    recipe.add_argument("--run");recipe.add_argument("--replication");recipe.add_argument("--out",required=True)
+    replica=sub.add_parser("replicate",help="Evaluate a frozen intervention on fresh test/control prompts")
+    replica.add_argument("--run",required=True);replica.add_argument("--dataset",required=True)
+    replica.add_argument("--out",required=True);replica.add_argument("--max-generations",type=int)
+    replica.add_argument("--max-seconds",type=float)
+    replica.add_argument("--retry-max-new-tokens",type=int)
+    historical=sub.add_parser("replication-dataset",help="Recover test/control prompts from historical outputs without importing scores")
+    historical.add_argument("--outputs",required=True);historical.add_argument("--out",required=True)
+    for name in ("replication-status","replication-report"):
+        command=sub.add_parser(name,help="Inspect an immutable frozen-intervention replication")
+        command.add_argument("--run",required=True)
     doc=sub.add_parser("doctor",help="Show environment and accelerator availability")
     bench=sub.add_parser("benchmark",help="Measure actual local throughput on one prompt")
     bench.add_argument("--run",required=True);bench.add_argument("--tokens",type=int,default=32)
@@ -93,6 +103,37 @@ def execute(a):
             s=RunStore(path);values.append({"run":str(s.root),"config_hash":s.meta["config_hash"],
                                           "evaluate":s.result("evaluate") if s.completed("evaluate") else None})
         print(dumps(values,True));return 0
+    if a.command=="replicate":
+        from .replication import open_or_create,run_replication
+        replica=open_or_create(a.run,a.dataset,a.out,max_generations=a.max_generations,
+                               max_seconds=a.max_seconds,
+                               retry_max_new_tokens=a.retry_max_new_tokens)
+        summary=run_replication(replica)
+        print(dumps({"replication":str(replica.root),"status":summary["status"],
+                     "passed":summary["passed"],"report":str(replica.root/"report.md")},True));return 0
+    if a.command=="replication-dataset":
+        from .replication import dataset_from_historical_outputs
+        print(dumps(dataset_from_historical_outputs(a.outputs,a.out),True));return 0
+    if a.command in {"replication-status","replication-report"}:
+        from .replication import ReplicationStore
+        replica=ReplicationStore(a.run)
+        state=replica.state()
+        if a.command=="replication-status":
+            summary=read_json(replica.root/"summary.json") if state.get("status")=="complete" else None
+            print(dumps({"replication":str(replica.root),"state":state,
+                         "summary":summary},True));return 0
+        if state.get("status")!="complete":raise LabError("Replication report is not complete")
+        print(replica.root/"report.md");return 0
+    if a.command in {"recipe","bundle"}:
+        if bool(a.run)==bool(a.replication):
+            raise LabError(f"{a.command} requires exactly one of --run or --replication")
+        if a.replication:
+            from .replication import ReplicationStore,write_recipe
+            replica=ReplicationStore(a.replication)
+            if a.command=="recipe":
+                write_recipe(replica,a.out);print(a.out);return 0
+            from .bundle import package_runtime_bundle
+            print(dumps(package_runtime_bundle(replica.source,a.out,replication=replica),True));return 0
     store=RunStore(a.run)
     if a.command=="status":print(dumps(store.state(),True));return 0
     if a.command=="plan" or (a.command=="run" and a.dry_run):

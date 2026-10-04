@@ -109,18 +109,23 @@ class RuntimeBundle:
         return self.backend.generate([record], self.directions, self.intervention, max_new_tokens)[0]
 
 
-def _replay_evaluation(store, bundle: RuntimeBundle) -> dict:
-    records = [r for split in ("test", "control") for r in store.dataset() if r["split"] == split]
-    expected = read_json(store.stage_dir("evaluate") / "outputs.json")
+def _replay_evaluation(store, bundle: RuntimeBundle, replication=None) -> dict:
+    dataset = replication.dataset() if replication is not None else store.dataset()
+    records = [r for split in ("test", "control") for r in dataset if r["split"] == split]
+    expected = (read_json(replication.root / "intervention_outputs.json") if replication is not None
+                else read_json(store.stage_dir("evaluate") / "outputs.json"))
+    if replication is not None:
+        expected += read_json(replication.root / "control_intervention.json")
     if [r["id"] for r in records] != [r["id"] for r in expected]:
         raise LabError("Stored held-out outputs do not align with dataset snapshot")
     batch_size = store.config["generation"]["batch_size"]
+    limit = read_json(replication.root / "summary.json")["generation_cap"] if replication is not None else None
     observed = []
     for split in ("test", "control"):
         group = [r for r in records if r["split"] == split]
         for start in range(0, len(group), batch_size):
             chunk = group[start:start + batch_size]
-            observed.extend(bundle.backend.generate(chunk, bundle.directions, bundle.intervention))
+            observed.extend(bundle.backend.generate(chunk, bundle.directions, bundle.intervention, limit))
     mismatches = [r["id"] for r, old, new in zip(records, expected, observed)
                   if old["token_ids"] != new["token_ids"]]
     if mismatches:
@@ -130,14 +135,26 @@ def _replay_evaluation(store, bundle: RuntimeBundle) -> dict:
             "exact_token_matches": len(records)}
 
 
-def package_runtime_bundle(store, destination: str | Path) -> dict:
-    if not store.completed("evaluate") or not store.result("evaluate").get("passed"):
+def package_runtime_bundle(store, destination: str | Path, replication=None) -> dict:
+    if replication is None and (not store.completed("evaluate") or not store.result("evaluate").get("passed")):
         raise LabError("A passing held-out evaluation is required before packaging a runtime model")
+    if replication is not None:
+        from .replication import ReplicationStore
+        replication=ReplicationStore(replication.root)
+        if replication.source.root != store.root:
+            raise LabError("Replication belongs to a different source run")
+        store=replication.source
+        if replication.state().get("status") != "complete":
+            raise LabError("Replication must be complete before packaging")
+        replication_result = read_json(replication.root / "summary.json")
+        if not replication_result.get("passed") or replication_result.get("status") != "validated_replication":
+            raise LabError("A passing frozen replication is required before packaging")
     config = store.config
     model = config["model"]
     if model.get("backend_plugin") or model["quantization"] != "none" or model["allow_offload"]:
         raise LabError("Runtime bundle currently requires the standard nonquantized, nonoffloaded backend")
-    selected = store.result("evaluate")["selected_intervention"]
+    selected = (replication.meta["intervention"] if replication is not None else
+                store.result("evaluate")["selected_intervention"])
     if selected.get("control_seed") is not None:
         raise LabError("A random-direction control cannot be packaged as a model")
     source, commit = _model_source(model)
@@ -148,6 +165,8 @@ def package_runtime_bundle(store, destination: str | Path) -> dict:
         raise LabError("Bundle destination must be separate from source model files")
     if dest == store.root or dest in store.root.parents:
         raise LabError("Bundle cannot replace the run directory")
+    if replication is not None and (dest == replication.root or dest in replication.root.parents):
+        raise LabError("Bundle cannot replace the replication directory")
     original = DirectionBundle.load(store.stage_dir("directions"))
     if original.metadata.get("model_identity") != store.result("inspect")["model_identity"]:
         raise LabError("Direction and inspected model identities disagree")
@@ -170,17 +189,27 @@ def package_runtime_bundle(store, destination: str | Path) -> dict:
                     "source_model_id": model["id"], "source_snapshot_commit": commit,
                     "backend_config": backend_config, "intervention": selected,
                     "directions_fingerprint": original.fingerprint(),
-                    "evaluation": {"passed": True, "test": store.result("evaluate")["test"],
-                                   "control_absolute_drift_fraction": store.result("evaluate")["control_absolute_drift_fraction"]},
+                    "evaluation": ({"passed": True, "test": replication_result["test"],
+                                    "control_absolute_drift_fraction": replication_result["control"]["absolute_score_drift_fraction"]}
+                                   if replication is not None else
+                                   {"passed": True, "test": store.result("evaluate")["test"],
+                                    "control_absolute_drift_fraction": store.result("evaluate")["control_absolute_drift_fraction"]}),
+                    "replication": ({"run":str(replication.root),
+                                     "dataset_hash":replication.meta["replication_dataset_hash"],
+                                     "summary_hash":file_hash(replication.root / "summary.json"),
+                                     "generation_cap":replication_result["generation_cap"],
+                                     "status":replication_result["status"]}
+                                    if replication is not None else None),
                     "files": files,
                     "note": "Model weights are unchanged; run_bundle.py applies the validated activation hook during generation."}
         write_json(temp / "bundle.json", manifest)
         temp.rename(dest)
         committed = True
-        replay = _replay_evaluation(store, RuntimeBundle(dest))
+        replay = _replay_evaluation(store, RuntimeBundle(dest), replication)
         manifest["package_validation"] = replay
         write_json(dest / "bundle.json", manifest)
-        store.event("runtime_bundle_created", destination=str(dest), snapshot_commit=commit, replay=replay)
+        (replication if replication is not None else store).event(
+            "runtime_bundle_created", destination=str(dest), snapshot_commit=commit, replay=replay)
         return {"destination": str(dest), "snapshot_commit": commit, **replay}
     except BaseException:
         if committed:

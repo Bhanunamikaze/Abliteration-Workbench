@@ -20,6 +20,8 @@ Only text message content is supported by the built-in backend. Audio, images, t
 
 Training estimates the directions. Validation selects layers/sites/strengths. Test checks the chosen intervention once. Control examples measure collateral changes. Repeated adaptive use of test data invalidates its held-out status; create a fresh test set for later rounds. Exact duplicates and cross-split group reuse are rejected, but the tool cannot detect every semantic paraphrase. Label related topics with a common group yourself.
 
+For `replicate`, each row needs a unique `id`, a `test` or `control` split, and a nonempty `neutral` prompt. Training and validation pairs are neither required nor accepted. Replication rejects exact duplicate neutral prompts within the new set and exact overlap with any source-run prompt. It cannot detect paraphrase overlap; curate the external set independently before freezing it. Scorer-specific fields such as `expected`, `required_terms`, `category`, and `prompt_label` can accompany each row.
+
 ## Positive/negative meaning
 
 The vector points from the negative-condition mean toward the positive-condition mean. These labels do not mean good/bad, safe/unsafe, refusal/compliance, or long/short inherently. The declared metric determines what output is measured. The observed positive/negative baseline scores are saved so label/metric reversals are visible. Reversed steering slopes are retained rather than silently relabeling the direction.
