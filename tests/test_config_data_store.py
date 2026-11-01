@@ -88,6 +88,14 @@ def test_exact_prompt_leakage(dataset_file):
     write_json(dataset_file,rows)
     with pytest.raises(LabError,match="crosses splits"):load_dataset(dataset_file,2)
 
+@pytest.mark.parametrize("required_terms", [[123], [None], [""], ["   "]])
+def test_required_terms_must_be_nonempty_strings(dataset_file, required_terms):
+    rows = json.loads(dataset_file.read_text())
+    rows[-1]["required_terms"] = required_terms
+    write_json(dataset_file, rows)
+    with pytest.raises(LabError, match="required_terms must be a list of nonempty strings"):
+        load_dataset(dataset_file, 2)
+
 def test_inplace_config_changes_rejected(store):
     c=store.config;c["generation"]["batch_size"]=3;write_json(store.root/"config.json",c)
     with pytest.raises(LabError,match="edited in place"):RunStore(store.root)

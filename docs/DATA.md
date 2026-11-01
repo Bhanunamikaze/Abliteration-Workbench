@@ -12,7 +12,7 @@ Every row:
 - `neutral`: nonempty text or `[{'role': 'user', 'content': '...'}]` message array.
 - `positive`, `negative`: required for train/validation. Same question under contrasting conditions is usually a better controlled design than unrelated topics.
 - `expected`: needed by `exact` scoring.
-- `required_terms`: needed by `contains` and the example plugin. Also enables an auxiliary lexical-content check.
+- `required_terms`: a list of nonempty strings, needed by `contains` and the example plugin. Also enables an auxiliary lexical-content check.
 
 Only text message content is supported by the built-in backend. Audio, images, tools with structured payloads, and per-expert token routing need a custom backend. Chat templates must support the roles in the dataset. A model without a template requires explicit `model.adapter.plain_text=true`; the tool will not silently invent a chat template.
 
